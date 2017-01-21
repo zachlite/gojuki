@@ -1,18 +1,13 @@
 class GameRenderer {
-    constructor (scope) {
-        this.scope = scope;
+    constructor (game_env) {
+        this.game_env = game_env;
+        this.renderer = PIXI.autoDetectRenderer(640, 480);
+        document.body.appendChild(this.renderer.view);
     }
 
     render() {
-
         console.log("rendering");
-
-        var entities = this.scope.state.entities;
-
-        for (var entity in entities) {
-            entities[entity].render();
-        }
-
+        this.renderer.render(this.game_env.scene.sprites);
     }
 }
 

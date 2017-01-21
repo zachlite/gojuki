@@ -1,8 +1,8 @@
 class GameLoop {
     
-    constructor(scope) {
-        this.scope = scope;
-        this.paused = false;
+    constructor(game_updater, game_renderer) {
+        this.game_updater = game_updater;
+        this.game_renderer = game_renderer;
         this.start();
     }
 
@@ -13,10 +13,10 @@ class GameLoop {
             this.loop_handle = requestAnimationFrame(mainLoop);
 
             // update 
-            this.scope.gameUpdater.update();
+            this.game_updater.update();
 
             // render  
-            this.scope.gameRenderer.render();
+            this.game_renderer.render();
 
         };
 

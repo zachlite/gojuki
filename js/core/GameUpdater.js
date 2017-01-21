@@ -1,17 +1,16 @@
 class GameUpdater {
-    constructor (scope) {
-        this.scope = scope;
+    constructor (game_env) {
+        this.game_env = game_env;
     }
 
     update() {
 
         console.log("updating");
             
-        var entities = this.scope.state.entities;
+        var entities = this.game_env.scene.entities;
 
         for (var entity in entities) {
-            // entities[entity].update();
-            console.log(entities[entity]);
+            entities[entity].update();
         }
 
     }
