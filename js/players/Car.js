@@ -2,8 +2,13 @@ import Keyboard from "./../utils/Keyboard.js";
 
 class Car {
     constructor () {
-        this.speed = 6.0;
-        this.turn_speed = .1;
+
+        this.v = 0.0;
+        this.v_max = 20.0;
+        this.acc = 1.0;
+        this.friction = .98;
+
+        this.turn_speed = .01;
         this.sprite = this.initSprite();
     }
 
@@ -14,7 +19,7 @@ class Car {
         
         sprite.width = 50.0;
         sprite.height = 50.0;
-        sprite.anchor.set(.5, .8);
+        sprite.anchor.set(.5, .7);
         sprite.position.set(100, 100);
         sprite.rotation = Math.PI / 2.0;
         
@@ -30,28 +35,56 @@ class Car {
         }
 
         if (Keyboard.is_pressed.up) {
-            this.moveForward();
-        } else if (Keyboard.is_pressed.down) {
-            this.moveBackward();
+            this.thrust();
+        } else {
+            this.coast();        
         }
-        
+    
+        console.log(this.v);
+
+        if (this.sprite.position.x > 640) {
+            this.sprite.position.x = 0;
+        }
+
     }
 
     turnLeft() {
-        this.sprite.rotation -= this.turn_speed;
+        this.sprite.rotation -= (this.turn_speed * this.v);
     }
 
     turnRight() {
-        this.sprite.rotation += this.turn_speed;
+        this.sprite.rotation += (this.turn_speed * this.v);
     }
 
-    moveForward() {
+    thrust() {
+
+        this.v = Math.min(
+            this.v + this.acc,
+            this.v_max
+        );
+
+        this.move();
+
+    }
+
+    coast() {
+
+        var v_adj = this.v * this.friction;
+        this.v = (v_adj < 0.1) ? 0 : v_adj;
+
+        this.move();
+
+    }
+
+    move () {
+
         var heading = this.sprite.rotation;
         var x_disp = Math.sin(heading);
         var y_disp = Math.cos(heading) * -1;
-
-        this.sprite.x += (x_disp * this.speed);
-        this.sprite.y += (y_disp * this.speed);
+        
+        this.sprite.x += (x_disp * this.v);
+        this.sprite.y += (y_disp * this.v);
+        
     }
 
     moveBackward() {

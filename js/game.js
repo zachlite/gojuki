@@ -4,7 +4,7 @@ import GameLoop from "./core/GameLoop.js";
 import GameUpdater from "./core/GameUpdater.js";
 import GameRenderer from "./core/GameRenderer.js";
 import Car from "./players/Car.js";
-// import Keyboard from "./utils/Keyboard.js";
+
 
 class Game {
 
