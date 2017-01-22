@@ -4,8 +4,6 @@ class GameUpdater {
     }
 
     update() {
-
-        console.log("updating");
             
         var entities = this.game_env.scene.entities;
 

@@ -4,6 +4,7 @@ import GameLoop from "./core/GameLoop.js";
 import GameUpdater from "./core/GameUpdater.js";
 import GameRenderer from "./core/GameRenderer.js";
 import Car from "./players/Car.js";
+// import Keyboard from "./utils/Keyboard.js";
 
 class Game {
 
@@ -45,10 +46,10 @@ class Game {
 
         this.gameLoop = new GameLoop(this.game_updater, this.game_renderer);
 
-        window.setTimeout(() => {
-            console.log("loop done");
-            this.gameLoop.stop();
-        }, 5000);
+        // window.setTimeout(() => {
+        //     console.log("loop done");
+        //     this.gameLoop.stop();
+        // }, 5000);
 
     }
 

@@ -6,7 +6,6 @@ class GameRenderer {
     }
 
     render() {
-        console.log("rendering");
         this.renderer.render(this.game_env.scene.sprites);
     }
 }
