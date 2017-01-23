@@ -1,10 +1,11 @@
 import Keyboard from "./../utils/Keyboard.js";
+import Window from "./../utils/Window.js";
 
 class Car {
     constructor () {
 
         this.v = 0.0;
-        this.v_max = 20.0;
+        this.v_max = 10.0;
         this.acc = 1.0;
         this.friction = .98;
 
@@ -42,7 +43,7 @@ class Car {
     
         console.log(this.v);
 
-        if (this.sprite.position.x > 640) {
+        if (this.sprite.position.x > Window.screen_width) {
             this.sprite.position.x = 0;
         }
 

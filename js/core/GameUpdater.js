@@ -1,16 +1,13 @@
+import {scene_manager} from "./../world/SceneManager.js";
+
 class GameUpdater {
-    constructor (game_env) {
-        this.game_env = game_env;
+    constructor () {
+
     }
 
     update() {
-            
-        var entities = this.game_env.scene.entities;
-
-        for (var entity in entities) {
-            entities[entity].update();
-        }
-
+        // update the current scene
+        scene_manager.current_scene.update();
     }
 }
 

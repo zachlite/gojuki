@@ -1,12 +1,20 @@
+import {scene_manager} from "./../world/SceneManager.js";
+import Window from "./../utils/Window.js";
+
 class GameRenderer {
-    constructor (game_env) {
-        this.game_env = game_env;
-        this.renderer = PIXI.autoDetectRenderer(640, 480);
+    constructor () {
+        this.renderer = PIXI.autoDetectRenderer(
+            Window.screen_width, 
+            Window.screen_height
+        );
+
         document.body.appendChild(this.renderer.view);
     }
 
     render() {
-        this.renderer.render(this.game_env.scene.sprites);
+        this.renderer.render(
+            scene_manager.current_scene.stage
+        );
     }
 }
 
