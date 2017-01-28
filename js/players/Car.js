@@ -5,11 +5,12 @@ class Car {
     constructor () {
 
         this.v = 0.0;
-        this.v_max = 10.0;
+        this.v_max = 12.0;
+        this.v_max_reverse = -5.0;
         this.acc = 1.0;
         this.friction = .98;
 
-        this.turn_speed = .01;
+        this.turn_speed = .015;
         this.sprite = this.initSprite();
     }
 
@@ -18,8 +19,8 @@ class Car {
             PIXI.Texture.fromImage("img/car.png")
         );
         
-        sprite.width = 50.0;
-        sprite.height = 50.0;
+        sprite.width = 20.0;
+        sprite.height = 20.0;
         sprite.anchor.set(.5, .7);
         sprite.position.set(100, 100);
         sprite.rotation = Math.PI / 2.0;
@@ -37,15 +38,21 @@ class Car {
 
         if (Keyboard.is_pressed.up) {
             this.thrust();
+        } else if (Keyboard.is_pressed.down) {
+            this.reverse();        
         } else {
-            this.coast();        
+            this.coast();
         }
-    
-        console.log(this.v);
 
-        if (this.sprite.position.x > Window.screen_width) {
-            this.sprite.position.x = 0;
-        }
+
+        // good to know...
+        // 
+        // if (this.sprite.position.x > Window.screen_width - this.sprite.width / 2.0) {
+        //     this.sprite.position.x = Window.screen_width - this.sprite.width / 2.0;
+        //     this.v_max = Math.min(Math.abs(5.0 / Math.cos(this.sprite.rotation)), 10);
+        // } else {
+        //     this.v_max = 10;
+        // }
 
     }
 
@@ -65,13 +72,22 @@ class Car {
         );
 
         this.move();
+    }
 
+    reverse() {
+
+        this.v = Math.max(
+            this.v - .5,
+            this.v_max_reverse
+        );
+
+        this.move();
     }
 
     coast() {
 
         var v_adj = this.v * this.friction;
-        this.v = (v_adj < 0.1) ? 0 : v_adj;
+        this.v = (Math.abs(v_adj) < 0.1) ? 0 : v_adj;
 
         this.move();
 
@@ -88,9 +104,6 @@ class Car {
         
     }
 
-    moveBackward() {
-
-    }
 }
 
 export default Car;
