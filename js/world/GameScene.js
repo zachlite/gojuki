@@ -1,57 +1,113 @@
+import Window from "./../utils/Window.js";
 import Scene from "./Scene.js";
-import Car from "./../players/Car.js";
+import Bug from "./../players/Bug.js";
+
 
 class GameScene extends Scene {
     constructor() {
         super();
-       
-        this.car = new Car();
+
+        this.foods = [];
+
+        this.bug = new Bug();
+        this.actors.push(this.bug);
+        this.stage.addChild(this.bug.sprite);
         
+        this.food_texture = PIXI.Texture.fromImage('img/food.png');
 
-        PIXI.loader
-            .add('spritesheet', 'img/sprites.json')
-            .load(() => {
+        for (var i = 0; i < 10; i++) {
+            this.makeFood();
+        }
 
-                var straight_track_texture = PIXI.Texture.fromFrame("track/track-straight.png");
-                var curved_track_texture = PIXI.Texture.fromFrame("track/track-turn.png");
+        setInterval(() => {
+            this.makeFood();
+        }, 1000);
 
-                var track_1 = new PIXI.Sprite(straight_track_texture);
-                var track_2 = new PIXI.Sprite(straight_track_texture);
-                var track_3 = new PIXI.Sprite(curved_track_texture);
-                
-                track_2.x = track_1.x + straight_track_texture._frame.width - 2;
-                track_3.x = track_2.x + straight_track_texture._frame.width + curved_track_texture._frame.width / 2.0 - 2;
-                track_3.y = curved_track_texture._frame.width / 2.0;
-                track_3.anchor.set(.5, .5);
-                track_3.rotation = 3 * Math.PI / 2.0;
-
-
-
-                console.log(track_3);
-
-                this.stage.addChild(track_1);          
-                this.stage.addChild(track_2);
-                this.stage.addChild(track_3);
-                this.stage.addChild(this.car.sprite);
-
-            });
-        
-     
-
-        // console.log(track);
-        // this.stage.addChild(track);
-        // console.log(PIXI.utils.TextureCache);
-
-        this.actors.push(this.car);
     }
 
     update() {
 
         // update all children of this scene
         super.update();
-        
-        // handle updates of scene specific events
+
+        for (var food in this.foods) {
+            if (this.hitTestRectangle(this.foods[food])) {
+                this.stage.removeChild(this.foods[food]);
+                this.foods.splice(food, 1);
+            }
+        }
     }
+
+    makeFood() {
+        console.log(this);
+        
+        var food = new PIXI.Sprite(this.food_texture);
+        
+        food.position.set(
+            Math.random() * Window.screen_width,
+            Math.random() * Window.screen_height
+        );
+        
+        food.scale.set(0.2, 0.2);
+        food.rotation = Math.random() * 2 * Math.PI;
+        this.stage.addChild(food);
+        this.foods.push(food);
+    }
+
+
+    hitTestRectangle(r1) {
+
+        // sucks
+        var r2 = this.bug.sprite;
+
+        //Define the variables we'll need to calculate
+        var hit, combinedHalfWidths, combinedHalfHeights, vx, vy;
+
+        //hit will determine whether there's a collision
+        hit = false;
+
+        //Find the center points of each sprite
+        r1.centerX = r1.x + r1.width / 2;
+        r1.centerY = r1.y + r1.height / 2;
+        r2.centerX = r2.x + r2.width / 2;
+        r2.centerY = r2.y + r2.height / 2;
+
+        //Find the half-widths and half-heights of each sprite
+        r1.halfWidth = r1.width / 2;
+        r1.halfHeight = r1.height / 2;
+        r2.halfWidth = r2.width / 2;
+        r2.halfHeight = r2.height / 2;
+
+        //Calculate the distance vector between the sprites
+        vx = r1.centerX - r2.centerX;
+        vy = r1.centerY - r2.centerY;
+
+        //Figure out the combined half-widths and half-heights
+        combinedHalfWidths = r1.halfWidth + r2.halfWidth;
+        combinedHalfHeights = r1.halfHeight + r2.halfHeight;
+
+        //Check for a collision on the x axis
+        if (Math.abs(vx) < combinedHalfWidths) {
+
+            //A collision might be occuring. Check for a collision on the y axis
+            if (Math.abs(vy) < combinedHalfHeights) {
+
+                //There's definitely a collision happening
+                hit = true;
+            } else {
+
+                //There's no collision on the y axis
+                hit = false;
+            }
+        } else {
+
+            //There's no collision on the x axis
+            hit = false;
+        }
+
+        //`hit` will be either `true` or `false`
+        return hit;
+    };
 }
 
 export default GameScene;

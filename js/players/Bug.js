@@ -1,11 +1,11 @@
 import Keyboard from "./../utils/Keyboard.js";
 import Window from "./../utils/Window.js";
 
-class Car {
+class Bug {
     constructor () {
 
         this.v = 0.0;
-        this.v_max = 12.0;
+        this.v_max = 8.0;
         this.v_max_reverse = -5.0;
         this.acc = 1.0;
         this.friction = .98;
@@ -22,7 +22,7 @@ class Car {
         sprite.width = 20.0;
         sprite.height = 20.0;
         sprite.anchor.set(.5, .7);
-        sprite.position.set(100, 100);
+        sprite.position.set(Math.random() * 1000, Math.random() * 500);
         sprite.rotation = Math.PI / 2.0;
         
         return sprite;
@@ -106,4 +106,4 @@ class Car {
 
 }
 
-export default Car;
+export default Bug;
