@@ -1,0 +1,37 @@
+jook
+
+Objective:
+Collect as much food as you can in 3 rounds.
+Collect food and bring it back to your base.  Can only hold x amount of food at a time
+
+Collect powerups to help you pick up more food then your opponents.
+    Powerups:
+        super speed
+        bug traps
+
+
+
+After each round, use your food to invest in ways to get more food
+    collect
+        insects that help you collect
+    steal
+        insects that steal from other players
+    defend
+        bug traps that keep stealing insects out
+
+
+Strategically price investments according to their benefit
+
+
+
+
+___________________________________
+Bug movement
+bug brings up to x items of food back to base
+    each food counts towards score
+
+Powerups
+
+Rounds
+
+investments

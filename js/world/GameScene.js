@@ -3,9 +3,36 @@ import Scene from "./Scene.js";
 import Bug from "./../players/Bug.js";
 
 
+class Base {
+    constructor() {
+
+        this.food_collected = 0;
+        this.collected_text = new PIXI.Text("0");
+
+        var base_texture = PIXI.Texture.fromImage("img/base.png");
+        this.sprite = new PIXI.Sprite(base_texture);
+        this.sprite.position.set(0, 0);
+
+        this.sprite.addChild(this.collected_text);
+    }
+
+    collectFood(food) {
+        this.food_collected += food;
+        this.collected_text.text = this.food_collected;
+
+    }
+}
+
+
+
 class GameScene extends Scene {
     constructor() {
         super();
+
+        this.base = new Base();
+        this.stage.addChild(this.base.sprite);
+
+
 
         this.foods = [];
 
@@ -19,10 +46,15 @@ class GameScene extends Scene {
             this.makeFood();
         }
 
-        setInterval(() => {
-            this.makeFood();
-        }, 1000);
 
+        this.powerups = [];
+        this.speed_powerup_texture = PIXI.Texture.fromImage("img/speed.png");
+
+        // setTimeout(() => {
+            // setInterval(() => {
+                this.makePowerup();
+            // }, 1000);
+        // }, 5000);
     }
 
     update() {
@@ -31,15 +63,48 @@ class GameScene extends Scene {
         super.update();
 
         for (var food in this.foods) {
-            if (this.hitTestRectangle(this.foods[food])) {
-                this.stage.removeChild(this.foods[food]);
-                this.foods.splice(food, 1);
+
+            if (this.hitTestRectangle(this.foods[food], this.bug.sprite)) {
+                
+                // the food is collected
+                if (this.bug.foods < this.bug.max_foods) {
+                    this.bug.foods += 1;
+
+                    // the food gets removed
+                    this.stage.removeChild(this.foods[food]);
+                    this.foods.splice(food, 1);
+
+                    // make more food
+                    this.makeFood();
+                }
             }
         }
+
+
+        // check for the bug coming back to base
+        if (this.hitTestRectangle(this.base.sprite, this.bug.sprite)) {
+            this.base.collectFood(this.bug.foods);
+            this.bug.foods = 0;
+        }
+
+
+        // check for powerup collection
+        for (var powerup in this.powerups) {
+            if (this.hitTestRectangle(this.powerups[powerup], this.bug.sprite)) {
+
+                // this powerup is collected
+                this.stage.removeChild(this.powerups[powerup]);
+                this.powerups.splice(powerup, 1);
+
+                // apply effects to player
+                this.bug.superSpeed();
+
+            }
+        }
+
     }
 
     makeFood() {
-        console.log(this);
         
         var food = new PIXI.Sprite(this.food_texture);
         
@@ -54,11 +119,20 @@ class GameScene extends Scene {
         this.foods.push(food);
     }
 
+    makePowerup() {
 
-    hitTestRectangle(r1) {
+        var powerup = new PIXI.Sprite(this.speed_powerup_texture);
 
-        // sucks
-        var r2 = this.bug.sprite;
+        powerup.position.set(
+            Math.random() * Window.screen_width,
+            Math.random() * Window.screen_height
+        );
+
+        this.stage.addChild(powerup);
+        this.powerups.push(powerup);
+    }
+
+    hitTestRectangle(r1, r2) {
 
         //Define the variables we'll need to calculate
         var hit, combinedHalfWidths, combinedHalfHeights, vx, vy;

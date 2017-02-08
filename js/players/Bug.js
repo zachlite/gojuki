@@ -4,13 +4,15 @@ import Window from "./../utils/Window.js";
 class Bug {
     constructor () {
 
+        this.foods = 0;
+        this.max_foods = 5;
+
         this.v = 0.0;
-        this.v_max = 8.0;
+        this.v_max = 5.0;
         this.v_max_reverse = -5.0;
         this.acc = 1.0;
-        this.friction = .98;
-
-        this.turn_speed = .015;
+        this.friction = .9;
+        this.turn_speed = .1;
         this.sprite = this.initSprite();
     }
 
@@ -57,11 +59,11 @@ class Bug {
     }
 
     turnLeft() {
-        this.sprite.rotation -= (this.turn_speed * this.v);
+        this.sprite.rotation -= this.turn_speed;
     }
 
     turnRight() {
-        this.sprite.rotation += (this.turn_speed * this.v);
+        this.sprite.rotation += this.turn_speed;
     }
 
     thrust() {
@@ -102,6 +104,15 @@ class Bug {
         this.sprite.x += (x_disp * this.v);
         this.sprite.y += (y_disp * this.v);
         
+    }
+
+    superSpeed() {
+        var initial = this.v_max;
+        this.v_max = 8;
+
+        setTimeout(() => {
+            this.v_max = initial;
+        }, 5000);
     }
 
 }
