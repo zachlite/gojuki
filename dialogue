@@ -1,0 +1,27 @@
+Dialogue:
+
+players initialize themselves in some order and broadcast they are there until they receive a response
+
+game manager tells each player what scene to load
+
+players load scene and tell manager theyve loaded scene
+
+game manager tells players to start scene once game manager has heard last player has loaded scene
+
+.
+.
+.
+.
+some time later
+.
+.
+.
+.
+.
+
+
+Game manager tells each player time is up
+
+each player stops their scene and tells manager scene is stopped
+
+game manager tells player what scene to load

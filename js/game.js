@@ -16,9 +16,13 @@ class Game {
 
     }
 
-    init() {
+    init(is_host) {
 
-        console.log("init");
+        if (is_host) {
+            // this.game_manager = new GameManager();
+        }
+
+        // this.player = new Player();
 
         scene_manager.createScene("intro", IntroScene);
         scene_manager.createScene("game", GameScene);
@@ -44,8 +48,9 @@ class Game {
 
 }
 
+var is_host = true;
 var game = new Game();
-if (game.init()) {
+if (game.init(is_host)) {
     game.play();
 }
 
