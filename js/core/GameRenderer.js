@@ -12,9 +12,11 @@ class GameRenderer {
     }
 
     render() {
-        this.renderer.render(
-            scene_manager.current_scene.stage
-        );
+        if (scene_manager.current_scene) {
+            this.renderer.render(
+                scene_manager.current_scene.stage
+            );
+        }
     }
 }
 

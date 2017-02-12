@@ -7,7 +7,9 @@ class GameUpdater {
 
     update() {
         // update the current scene
-        scene_manager.current_scene.update();
+        if (scene_manager.current_scene) {
+            scene_manager.current_scene.update();        
+        }
     }
 }
 

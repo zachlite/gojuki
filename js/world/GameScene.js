@@ -5,50 +5,105 @@ import Bug from "./../players/Bug.js";
 import Base from "./components/Base.js";
 
 class GameScene extends Scene {
-    constructor() {
+    constructor(party_guest, scene) {
         super();
 
-        this.base = new Base();
-        this.stage.addChild(this.base.sprite);
+        this.party_guest = party_guest;
 
 
+        // setup other players and their bases
+        // set up your player and base
 
-        this.foods = [];
+        this.opponents = {};
 
-        this.bug = new Bug();
-        this.actors.push(this.bug);
-        this.stage.addChild(this.bug.sprite);
-        
-        this.food_texture = PIXI.Texture.fromImage('img/food.png');
+        for (var player in this.party_guest.players) {
+            var p = parseInt(player) + 1;
+            if (p != this.party_guest.guest_number) {
+                
+                var base = new Base(p);
+                var bug = new Bug(p);
+                
+                this.stage.addChild(base.sprite);
+                this.stage.addChild(bug.sprite);
 
-        for (var i = 0; i < 10; i++) {
-            this.makeFood();
+                this.opponents[this.party_guest.players[player]] = {
+                    "base": base,
+                    "bug": bug
+                };
+            }
         }
 
+        var player_num = parseInt(this.party_guest.guest_number);
 
-        this.powerups = [];
-        this.speed_powerup_texture = PIXI.Texture.fromImage("img/speed.png");
+        this.base = new Base(player_num);
+        this.bug = new Bug(player_num);
 
-        // setTimeout(() => {
-            // setInterval(() => {
-                this.makePowerup();
-            // }, 1000);
-        // }, 5000);
+        this.stage.addChild(this.base.sprite);
+        this.stage.addChild(this.bug.sprite);
+        this.actors.push(this.bug);
+
+
+        // game clock
+        this.time_remaining = new PIXI.Text("TIME REMAINING: 60", {fill: 0xffffff});
+        this.time_remaining.position.set(Window.screen_width - this.time_remaining.width - 20, 0);
+        this.stage.addChild(this.time_remaining);
+
+
+        this.food_texture = PIXI.Texture.fromImage('img/food.png');
+        this.foods = [];
+
+        if (this.party_guest.guest_number == 1) {
+            // this player is designated to set up whatever is needed on the gameboard for other players.
+            for (var i = 0; i < 10; i++) {
+                this.didMakeFood();
+            }
+        }
+
     }
 
     update() {
 
         super.update();
 
-        this.didBugEatFood();
+        this.didPlayerEatFood();
 
-        this.didBugReturnToBase();
+        this.didPlayerReturnToBase();
 
-        this.didBugCollectPowerup();
+        // this.didBugCollectPowerup();
 
     }
 
-    didBugEatFood() {
+    getSceneData() {
+        var scene_data = {
+            "food_collected": this.base.food_collected
+        };
+
+        return scene_data;
+    }
+
+    didReceiveEvent(type, data) {
+        switch(type) {
+            case "food_created":
+                this.makeFood(data);
+                break;
+            case "game_time_tick":
+                this.didTimeChange(data);
+                break;
+            case "opponent_position":
+                this.updateOpponentPosition(data);
+                break;
+        }
+    }
+
+    updateOpponentPosition(data) {
+        this.opponents[data.opponent_id].bug.sprite.position = data.position;
+    }
+
+    didTimeChange(time) {
+        this.time_remaining.text = "TIME REMAINING: " + (time / 1000.0).toString();
+    }
+
+    didPlayerEatFood() {
         for (var food in this.foods) {
 
             if (Utils.hitTestRectangle(this.foods[food], this.bug.sprite)) {
@@ -61,14 +116,16 @@ class GameScene extends Scene {
                     this.stage.removeChild(this.foods[food]);
                     this.foods.splice(food, 1);
 
+                    this.party_guest.broadcastEvent("food_eaten", food);
+
                     // make more food
-                    this.makeFood();
+                    this.didMakeFood();
                 }
             }
         }
     }
 
-    didBugReturnToBase() {
+    didPlayerReturnToBase() {
         if (Utils.hitTestRectangle(this.base.sprite, this.bug.sprite)) {
             this.base.collectFood(this.bug.foods);
             this.bug.foods = 0;
@@ -90,19 +147,33 @@ class GameScene extends Scene {
         }
     }
 
-    makeFood() {
+    didMakeFood() {
+        var food = this.makeFood();
+        this.party_guest.broadcastEvent("food_created", food.position);
+    }
+
+    makeFood(position) {
         
         var food = new PIXI.Sprite(this.food_texture);
         
-        food.position.set(
-            Math.random() * Window.screen_width,
-            Math.random() * Window.screen_height
-        );
-        
+        if (position) {
+            food.position.set(
+                position.x,
+                position.y
+            )
+        } else {
+            food.position.set(
+                Math.random() * Window.screen_width,
+                Math.random() * Window.screen_height
+            );
+        }
+    
         food.scale.set(0.2, 0.2);
         food.rotation = Math.random() * 2 * Math.PI;
         this.stage.addChild(food);
         this.foods.push(food);
+
+        return food;
     }
 
     makePowerup() {

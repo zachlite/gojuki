@@ -1,4 +1,4 @@
-class GameManager {
+class PartyHost {
     constructor () {
 
     }

@@ -1,30 +1,22 @@
+import IntroScene from "./IntroScene.js";
+import GameScene from "./GameScene.js";
+import UpgradeScene from "./UpgradeScene.js";
+
 class SceneManager {
 
     constructor() {
-        this.scenes = {};
+        this.scenes = {
+            "intro": IntroScene,
+            "game": GameScene,
+            "upgrades": UpgradeScene
+        };
+
         this.current_scene = null;
     }
 
-    createScene(id, Tscene) {
-        var scene_instance = new Tscene();
-        this.scenes[id] = scene_instance;
+    createScene(scene_id, player, scene_data) {
+        this.current_scene = new this.scenes[scene_id](player, scene_data);
     }
-
-    goToScene(id) {
-        
-        if (this.scenes[id]) {
-
-            if (this.current_scene) {
-                this.current_scene.pause();
-            }
-
-            this.current_scene = this.scenes[id];
-            this.current_scene.resume();
-            return true;
-        }
-
-        return false;
-    }   
 
 }
 
