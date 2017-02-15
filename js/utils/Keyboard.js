@@ -2,13 +2,14 @@ function Keyboard() {
 
     this.is_pressed = {};
 
-    var left, right, up, down;
+    var left, right, up, down, space;
 
     document.onkeydown = function(e) {
         if (e.keyCode === 39) right = true;
         if (e.keyCode === 37) left = true;
         if (e.keyCode === 38) up = true;
         if (e.keyCode === 40) down = true;
+        if (e.keyCode === 32) space = true;
     };
 
     document.onkeyup = function(e) {
@@ -16,6 +17,7 @@ function Keyboard() {
         if (e.keyCode === 37) left = false;
         if (e.keyCode === 38) up = false;
         if (e.keyCode === 40) down = false;
+        if (e.keyCode === 32) space = false
     };
 
     Object.defineProperty(this.is_pressed, 'left', {
@@ -38,6 +40,12 @@ function Keyboard() {
 
     Object.defineProperty(this.is_pressed, 'down', {
         get: function() { return down; },
+        configurable: true,
+        enumerable: true
+    });
+
+    Object.defineProperty(this.is_pressed, 'space', {
+        get: function() { return space; },
         configurable: true,
         enumerable: true
     });

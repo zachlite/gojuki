@@ -1,5 +1,5 @@
 class Base {
-    constructor(base_number) {
+    constructor(base_number, starting_value) {
 
         var bases = {
             "1": {
@@ -20,8 +20,7 @@ class Base {
             },
         }
 
-        this.food_collected = 0;
-        this.collected_text = new PIXI.Text("0");
+        this.collected_text = new PIXI.Text(starting_value.toString());
 
         var base_texture = PIXI.Texture.fromImage("img/base.png");
         this.sprite = new PIXI.Sprite(base_texture);
@@ -32,10 +31,8 @@ class Base {
         this.sprite.addChild(this.collected_text);
     }
 
-    collectFood(food) {
-        this.food_collected += food;
-        this.collected_text.text = this.food_collected.toString();
-
+    updateFoodCollectedDisplay(food) {
+        this.collected_text.text = food.toString();
     }
 }
 

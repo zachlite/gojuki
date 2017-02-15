@@ -2,7 +2,7 @@ import Keyboard from "./../utils/Keyboard.js";
 import Window from "./../utils/Window.js";
 
 class Bug {
-    constructor (number) {
+    constructor (number, v_max) {
 
         var bugs = {
             "1": {
@@ -23,11 +23,8 @@ class Bug {
             },
         }
 
-        this.foods = 0;
-        this.max_foods = 5;
-
         this.v = 0.0;
-        this.v_max = 5.0;
+        this.v_max = v_max;
         this.v_max_reverse = -5.0;
         this.acc = 1.0;
         this.friction = .9;
@@ -130,6 +127,14 @@ class Bug {
         var initial = this.v_max;
         this.v_max = 8;
 
+        setTimeout(() => {
+            this.v_max = initial;
+        }, 5000);
+    }
+
+    stuckInGoo() {
+        var initial = this.v_max;
+        this.v_max = .5;
         setTimeout(() => {
             this.v_max = initial;
         }, 5000);

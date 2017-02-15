@@ -32,7 +32,6 @@ class PartyGuest {
     loadScene(scene_id) {
         var scene_data = null;
         if (scene_manager.current_scene) {
-            console.log("current sceen!");
             scene_data = scene_manager.current_scene.getSceneData();        
         }
 

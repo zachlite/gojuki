@@ -1,27 +1,40 @@
 import * as Utils from "./../utils/Utils.js";
 import Window from "./../utils/Window.js";
+import Keyboard from "./../utils/Keyboard.js";
 import Scene from "./Scene.js";
 import Bug from "./../players/Bug.js";
 import Base from "./components/Base.js";
 
 class GameScene extends Scene {
-    constructor(party_guest, scene) {
+    constructor(party_guest, scene_data) {
         super();
 
         this.party_guest = party_guest;
+        
+        scene_data = scene_data || {
+            food: 0,
+            food_carry_limit: 5,
+            speed: 5,
+            goo: 3
+        };
 
+        // food
+        this.food_carry_limit = scene_data.food_carry_limit;
+        this.food_carrying = 0;
+        this.food = scene_data.food;
 
-        // setup other players and their bases
-        // set up your player and base
+        this.speed = scene_data.speed;
+        this.goo = scene_data.goo;
 
+        // opponents
         this.opponents = {};
 
         for (var player in this.party_guest.players) {
             var p = parseInt(player) + 1;
             if (p != this.party_guest.guest_number) {
                 
-                var base = new Base(p);
-                var bug = new Bug(p);
+                var base = new Base(p, 0);
+                var bug = new Bug(p, 5);
                 
                 this.stage.addChild(base.sprite);
                 this.stage.addChild(bug.sprite);
@@ -35,8 +48,8 @@ class GameScene extends Scene {
 
         var player_num = parseInt(this.party_guest.guest_number);
 
-        this.base = new Base(player_num);
-        this.bug = new Bug(player_num);
+        this.base = new Base(player_num, this.food);
+        this.bug = new Bug(player_num, this.speed);
 
         this.stage.addChild(this.base.sprite);
         this.stage.addChild(this.bug.sprite);
@@ -49,16 +62,20 @@ class GameScene extends Scene {
         this.stage.addChild(this.time_remaining);
 
 
+        this.goo_texture = PIXI.Texture.fromImage("img/goo.png");
+        this.goos = [];
+
         this.food_texture = PIXI.Texture.fromImage('img/food.png');
         this.foods = [];
 
         if (this.party_guest.guest_number == 1) {
             // this player is designated to set up whatever is needed on the gameboard for other players.
             for (var i = 0; i < 10; i++) {
-                this.didMakeFood();
+                this.doMakeFood();
             }
         }
 
+        this.space_pressed = false;
     }
 
     update() {
@@ -69,16 +86,21 @@ class GameScene extends Scene {
 
         this.didPlayerReturnToBase();
 
+        this.didPlayerDeployGoo();
+
+        this.didPlayerGetStuckInGoo();
+
         // this.didBugCollectPowerup();
 
     }
 
     getSceneData() {
-        var scene_data = {
-            "food_collected": this.base.food_collected
+        return {
+            food: this.food,
+            food_carry_limit: this.food_carry_limit,
+            speed: this.speed,
+            goo: this.goo
         };
-
-        return scene_data;
     }
 
     didReceiveEvent(type, data) {
@@ -86,6 +108,8 @@ class GameScene extends Scene {
             case "food_created":
                 this.makeFood(data);
                 break;
+            case "goo_created": 
+                this.makeGoo(data);
             case "game_time_tick":
                 this.didTimeChange(data);
                 break;
@@ -109,8 +133,8 @@ class GameScene extends Scene {
             if (Utils.hitTestRectangle(this.foods[food], this.bug.sprite)) {
                 
                 // the food is collected
-                if (this.bug.foods < this.bug.max_foods) {
-                    this.bug.foods += 1;
+                if (this.food_carrying < this.food_carry_limit) {
+                    this.food_carrying += 1;
 
                     // the food gets removed
                     this.stage.removeChild(this.foods[food]);
@@ -119,7 +143,7 @@ class GameScene extends Scene {
                     this.party_guest.broadcastEvent("food_eaten", food);
 
                     // make more food
-                    this.didMakeFood();
+                    this.doMakeFood();
                 }
             }
         }
@@ -127,8 +151,38 @@ class GameScene extends Scene {
 
     didPlayerReturnToBase() {
         if (Utils.hitTestRectangle(this.base.sprite, this.bug.sprite)) {
-            this.base.collectFood(this.bug.foods);
-            this.bug.foods = 0;
+            
+            console.log(this.food_carrying);
+            this.food += this.food_carrying;
+            this.base.updateFoodCollectedDisplay(this.food);
+            this.food_carrying = 0;
+        }
+    }
+
+    didPlayerDeployGoo() {
+        if (Keyboard.is_pressed.space && this.space_pressed == false) {
+            
+            if (this.goo > 0) {
+                this.doMakeGoo();
+                this.goo--;
+            }
+
+            this.space_pressed = true;
+        } else if (Keyboard.is_pressed.space == false) {
+            this.space_pressed = false;
+        }
+    }
+
+    didPlayerGetStuckInGoo() {
+        for (var goo in this.goos) {
+            if (Utils.hitTestRectangle(this.goos[goo], this.bug.sprite)) {
+                this.stage.removeChild(this.goos[goo]);
+                this.goos.splice(goo, 1);
+
+                // apply effects to player
+                console.log("stuck in goo");
+                this.bug.stuckInGoo();
+            }
         }
     }
 
@@ -147,7 +201,32 @@ class GameScene extends Scene {
         }
     }
 
-    didMakeFood() {
+    doMakeGoo() {
+        var goo = this.makeGoo();
+        this.party_guest.broadcastEvent("goo_created", goo.position);
+    }
+
+    makeGoo(position) {
+        var goo = new PIXI.Sprite(this.goo_texture);
+
+        if (position) {
+            goo.position.set(
+                position.x,
+                position.y
+            );
+        } else {
+            goo.position.set(
+                this.bug.sprite.position.x + 20,
+                this.bug.sprite.position.y + 20
+            )
+        }
+
+        this.stage.addChildAt(goo, 0);
+        this.goos.push(goo);
+        return goo;
+    }
+
+    doMakeFood() {
         var food = this.makeFood();
         this.party_guest.broadcastEvent("food_created", food.position);
     }
