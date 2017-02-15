@@ -27,7 +27,7 @@ class IntroScene extends Scene {
     }
 
     didPressPlayButton() {
-        scene_manager.goToScene("game");
+        scene_manager.createScene("game");
     }
 }
 

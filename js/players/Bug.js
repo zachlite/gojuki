@@ -1,29 +1,48 @@
 import Keyboard from "./../utils/Keyboard.js";
 import Window from "./../utils/Window.js";
 
-class Car {
-    constructor () {
+class Bug {
+    constructor (number, v_max) {
+
+        var bugs = {
+            "1": {
+                "color": "0xff0000",
+                "position": new PIXI.Point(20, 90)
+            },
+            "2": {
+                "color": "0xffff00",
+                "position": new PIXI.Point(520, 90)
+            },
+            "3": {
+                "color": "0xff00ff",
+                "position": new PIXI.Point(20, 410)
+            },
+            "4": {
+                "color": "0x00ffff",
+                "position": new PIXI.Point(520, 410)
+            },
+        }
 
         this.v = 0.0;
-        this.v_max = 12.0;
+        this.v_max = v_max;
         this.v_max_reverse = -5.0;
         this.acc = 1.0;
-        this.friction = .98;
-
-        this.turn_speed = .015;
-        this.sprite = this.initSprite();
+        this.friction = .9;
+        this.turn_speed = .1;
+        this.sprite = this.initSprite(bugs, number);
     }
 
-    initSprite() {
+    initSprite(bugs, number) {
         var sprite = new PIXI.Sprite(
-            PIXI.Texture.fromImage("img/car.png")
+            PIXI.Texture.fromImage("img/bug.png")
         );
-        
-        sprite.width = 20.0;
-        sprite.height = 20.0;
+
+        sprite.tint = bugs[number].color;
+        sprite.position.copy(bugs[number].position);
+        sprite.width = 10;
+        sprite.height = 20;
+
         sprite.anchor.set(.5, .7);
-        sprite.position.set(100, 100);
-        sprite.rotation = Math.PI / 2.0;
         
         return sprite;
     }
@@ -57,11 +76,11 @@ class Car {
     }
 
     turnLeft() {
-        this.sprite.rotation -= (this.turn_speed * this.v);
+        this.sprite.rotation -= this.turn_speed;
     }
 
     turnRight() {
-        this.sprite.rotation += (this.turn_speed * this.v);
+        this.sprite.rotation += this.turn_speed;
     }
 
     thrust() {
@@ -104,6 +123,23 @@ class Car {
         
     }
 
+    superSpeed() {
+        var initial = this.v_max;
+        this.v_max = 8;
+
+        setTimeout(() => {
+            this.v_max = initial;
+        }, 5000);
+    }
+
+    stuckInGoo() {
+        var initial = this.v_max;
+        this.v_max = .5;
+        setTimeout(() => {
+            this.v_max = initial;
+        }, 5000);
+    }
+
 }
 
-export default Car;
+export default Bug;
