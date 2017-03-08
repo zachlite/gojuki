@@ -1,14 +1,20 @@
 module.exports = {
-    entry: './js/game.js',
+    entry: {
+        home: "./js/home.jsx",
+        game: "./js/game/game.js"
+    },
     output: {
-        filename: 'bundle.js'
+        filename: './dist/[name].bundle.js'
     },    
     module: {
         rules: [
             {
                 test: /\.(js|jsx)$/,
                 loader: 'babel-loader',
-                exclude: /node_modules/
+                exclude: /node_modules/,
+                query: {
+                    presets: ["react", "es2015"]
+                }
             }
         ]
     },
