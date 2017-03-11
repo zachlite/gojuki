@@ -25,15 +25,12 @@ party.get("/:party_id", function(req, res) {
 			req.params.party_id,
 			req.session.player_name
 		);
-		res.redirect("./"+req.params.party_id+"/join");
+		res.send("ok here is party " + req.params.party_id + "<br> you are playing as " + req.session.player_name);
 	}
 
 });
 
 party.get("/:party_id/join", function(req, res) {
-
-	partyController.getStuff(req.params.party_id);
-
 	res.send("need to join da party! <input placeholder='name'>");
 });
 

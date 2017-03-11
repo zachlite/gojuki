@@ -1,0 +1,43 @@
+<!DOCTYPE html>
+<html>
+<head>
+	<title>Socket Test</title>
+	<script type="text/javascript" src="https://cdnjs.cloudflare.com/ajax/libs/socket.io/1.7.3/socket.io.min.js"></script>
+	<script
+	  src="https://code.jquery.com/jquery-2.2.4.min.js"
+	  integrity="sha256-BbhdlvQf/xTY9gja0Dq3HiwQF8LaCRTXxZKRutelT44="
+	  crossorigin="anonymous"></script>
+</head>
+<body>
+	<h1>Hi</h1>
+	<button class="join-btn" data-party-id="abc">Join Party abc</button>
+	<button class="join-btn" data-party-id="xyz">Join Party xyz</button>
+
+
+	<script type="text/javascript">
+		var socket = io.connect();
+
+		socket.on("connect", function () {
+			console.log("client connected");
+			console.log(socket);
+		});
+
+		socket.on("PLAYER_JOINED", function(players) {
+			console.log(players)
+		});
+
+		socket.on("PLAYER_LEFT", function(players) {
+			console.log(players);
+		});
+
+		$(function(){
+			$(".join-btn").on("click", function(){
+				console.log("should add player");
+				var party_id = $(this).data("partyId");
+				socket.emit("ADD_PLAYER", prompt("Player Name:"), party_id);
+			});
+		});
+
+	</script>
+</body>
+</html>

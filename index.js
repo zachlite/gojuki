@@ -1,9 +1,7 @@
 var express = require("express");
 var session = require("express-session");
 var RedisStore = require("connect-redis")(session);
-
 let uuidV1 = require("uuid/v1");
-
 var party = require("./routes/party");
 var app = express();
 

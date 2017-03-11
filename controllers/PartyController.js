@@ -17,14 +17,6 @@ class PartyController {
 
 		// return party_id
 		return party_id;
-
-	}
-
-
-	getStuff(party_id) {
-		this.redis.get(party_id, function (err, reply) {
-			console.log(JSON.parse(reply));
-		});
 	}
 
 	addGuest(party_id, player_name) {
