@@ -1,6 +1,6 @@
 module.exports = {
     entry: {
-        home: "./js/home.jsx",
+        party: "./js/party.jsx",
         game: "./js/game/game.js"
     },
     output: {
