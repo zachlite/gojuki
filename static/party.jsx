@@ -5,28 +5,19 @@ import IO from "socket.io-client";
 class Party extends React.Component {
 	constructor(props) {
 		super(props);
+		this.playerMax = 4;
 		this.state = {
 			secondsElapsed: 0,
-			playersMissing: 4,
-			players: []
+			playersMissing: this.playerMax,
+			players: [],
+			timeToGameStart: 10
 		};
 		this.connectToPartyServer();
-		// this.players = [
-		// 	{
-		// 		"name": "zachlite",
-		// 		"id": 1
-		// 	},
-		// 	{
-		// 		"name": "monkeyman",
-		// 		"id": 2
-		// 	}
-		// ];
-		setInterval(() => this.tick(), 1000);
 	}
 
 	connectToPartyServer() {
 		var socket = IO.connect();
-
+		// 
 		this.playerName = prompt("What is your playername?");
 		socket.emit("ADD_PLAYER", this.playerName, this.props.partyId);
 
@@ -42,29 +33,49 @@ class Party extends React.Component {
 		socket.on("PLAYER_LEFT", (players) => {
 			console.log("player left!");
 			this.updatePlayersInParty(players);
+			clearInterval(this.gameStartTimer);
+			this.setState({
+				timeToGameStart: 10
+			})
 		});
-	}
 
-	updatePlayersInParty(players) {
-		console.log(players.length);
-		this.setState({
-			players: players,
-			playersMissing: this.state.playersMissing - players.length
+		socket.on("GAME_STARTING", () => {
+			console.log("game starting");
+			this.gameStartTimer = setInterval(() => this.tick(), 1000);
 		});
 	}
 
 	tick() {
-		// this.setState({secondsElapsed: this.state.secondsElapsed + 1});
+
+		if (this.state.timeToGameStart === 0) {
+			// this.startGame();
+		} else {
+			this.setState((prevState) => ({
+				timeToGameStart: prevState.timeToGameStart - 1
+			}));
+		}
+	}
+
+	updatePlayersInParty(players) {
+		this.setState({
+			players: players,
+			playersMissing: this.playerMax - players.length
+		});
 	}
 
 	render() {
+
+		var countdown = (this.state.players.length == 4) ?
+			<p>Starting game in {this.state.timeToGameStart} seconds</p> : 
+			null;
+
 		return (
 			<div>
 				<a href="/">Home</a>
 				<h1>Party Lobby</h1>
 				<h3>Waiting for {this.state.playersMissing} more player(s)...</h3>
 				<PlayerList players={this.state.players}/>
-				<div>seconds elapsed: {this.state.secondsElapsed}</div>
+				{countdown}
 			</div>
 		);
 	}

@@ -4,7 +4,8 @@
   "description": "",
   "main": "index.js",
   "scripts": {
-    "run": "node_modules/.bin/webpack-dev-server --open"
+    "run": "node_modules/.bin/webpack-dev-server --open",
+    "server": "node_modules/.bin/nodemon --config nodemon.json"
   },
   "author": "Zach Lite",
   "license": "ISC",

@@ -1,10 +1,9 @@
 module.exports = {
     entry: {
-        party: "./js/party.jsx",
-        game: "./js/game/game.js"
+        party: "./static/gojuki-client.js",
     },
     output: {
-        filename: './dist/[name].bundle.js'
+        filename: './static/dist/[name].bundle.js'
     },    
     module: {
         rules: [

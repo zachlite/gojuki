@@ -10,6 +10,8 @@ class Game {
 
     constructor () {
         this.game_time = 20 * 1000;
+        this.init(false);
+        this.play();
     }
 
     init(is_host) {
@@ -24,9 +26,9 @@ class Game {
         // mock interactions
         this.party_guest.reportPlayerInitialized();
         // 
-        this.party_host.acknowledgeGuestJoined();
+        // this.party_host.acknowledgeGuestJoined();
 
-        this.party_guest.loadScene("upgrades");
+        this.party_guest.loadScene("game");
 
         // var interval = 1000;
         // var timer = setInterval(() => {
@@ -88,9 +90,11 @@ class Game {
 
 }
 
-var is_host = true;
-var game = new Game();
-if (game.init(is_host)) {
-    game.play();
-}
+export default Game;
+
+// var is_host = true;
+// var game = new Game();
+// if (game.init(is_host)) {
+//     game.play();
+// }
 
