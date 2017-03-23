@@ -13,6 +13,7 @@ app.set("views", __dirname + "/views");
 
 
 app.use("/static", express.static(path.join(__dirname, "/static")));
+app.use("/img", express.static(path.join(__dirname, "/img")));
 
 app.get("/", function(req, res) {
     res.sendFile(__dirname + '/views/index.html');
@@ -57,6 +58,21 @@ io.sockets.on("connection", function(socket) {
 		if (players.length == 2) {
 			io.in(partyId).emit("GO_TO_GAME", players);
 		}
+	});
+
+	socket.on("NEED_PLAYERS", function () {
+		socket.emit("NEED_PLAYERS_RESPONSE", getPlayersInParty(socket.partyId));
+	});
+
+	socket.on("GAME_TIME_TICK", function (gameTime) {
+		io.in(socket.partyId).emit("GAME_TIME_TICKED", gameTime);
+	});
+
+	socket.on("PLAYER_EVENT", function (type, data) {
+		// console.log("PLAYER EVENT RECEIVED!");
+		// console.log(type);
+		// console.log(data);
+		socket.broadcast.to(socket.partyId).emit("PLAYER_EVENT", type, data);
 	});
 
 	// socket.on('ADD_PLAYER', function (playerName, partyId) {

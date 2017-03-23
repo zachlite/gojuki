@@ -5,6 +5,11 @@ import Scene from "./Scene.js";
 import Bug from "./../players/Bug.js";
 import Base from "./components/Base.js";
 
+// player moved
+// player deployed goo
+// player got stuck in goo
+
+
 class GameScene extends Scene {
     constructor(party_guest, scene_data) {
         super();
@@ -62,10 +67,10 @@ class GameScene extends Scene {
         this.stage.addChild(this.time_remaining);
 
 
-        this.goo_texture = PIXI.Texture.fromImage("img/goo.png");
+        this.goo_texture = PIXI.Texture.fromImage("/img/goo.png");
         this.goos = [];
 
-        this.food_texture = PIXI.Texture.fromImage('img/food.png');
+        this.food_texture = PIXI.Texture.fromImage('/img/food.png');
         this.foods = [];
 
         if (this.party_guest.guest_number == 1) {
@@ -108,6 +113,8 @@ class GameScene extends Scene {
             case "food_created":
                 this.makeFood(data);
                 break;
+            case "food_eaten":
+                this.removeFood(data);
             case "goo_created": 
                 this.makeGoo(data);
             case "game_time_tick":
@@ -116,7 +123,15 @@ class GameScene extends Scene {
             case "opponent_position":
                 this.updateOpponentPosition(data);
                 break;
+            case "returned_to_base":
+                this.updatePlayerBase(data);
+                break;
+
         }
+    }
+
+    updatePlayerBase(data) {
+        this.opponents[this.party_guest.players[data.playerNumber - 1]].base.updateFoodCollectedDisplay(data.foodCount);
     }
 
     updateOpponentPosition(data) {
@@ -137,8 +152,7 @@ class GameScene extends Scene {
                     this.food_carrying += 1;
 
                     // the food gets removed
-                    this.stage.removeChild(this.foods[food]);
-                    this.foods.splice(food, 1);
+                    this.removeFood(food);
 
                     this.party_guest.broadcastEvent("food_eaten", food);
 
@@ -149,6 +163,11 @@ class GameScene extends Scene {
         }
     }
 
+    removeFood(food) {
+        this.stage.removeChild(this.foods[food]);
+        this.foods.splice(food, 1);
+    }
+
     didPlayerReturnToBase() {
         if (Utils.hitTestRectangle(this.base.sprite, this.bug.sprite)) {
             
@@ -156,6 +175,7 @@ class GameScene extends Scene {
             this.food += this.food_carrying;
             this.base.updateFoodCollectedDisplay(this.food);
             this.food_carrying = 0;
+            this.party_guest.broadcastEvent("returned_to_base", {foodCount: this.food, playerNumber: this.party_guest.guest_number});
         }
     }
 
@@ -203,7 +223,7 @@ class GameScene extends Scene {
 
     doMakeGoo() {
         var goo = this.makeGoo();
-        this.party_guest.broadcastEvent("goo_created", goo.position);
+        this.party_guest.broadcastEvent("goo_created", {x: goo.position.x, y: goo.position.y});
     }
 
     makeGoo(position) {
@@ -228,7 +248,7 @@ class GameScene extends Scene {
 
     doMakeFood() {
         var food = this.makeFood();
-        this.party_guest.broadcastEvent("food_created", food.position);
+        this.party_guest.broadcastEvent("food_created", {x: food.position.x, y: food.position.y});
     }
 
     makeFood(position) {

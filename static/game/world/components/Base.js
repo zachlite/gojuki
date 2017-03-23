@@ -22,7 +22,7 @@ class Base {
 
         this.collected_text = new PIXI.Text(starting_value.toString());
 
-        var base_texture = PIXI.Texture.fromImage("img/base.png");
+        var base_texture = PIXI.Texture.fromImage("/img/base.png");
         this.sprite = new PIXI.Sprite(base_texture);
         
         this.sprite.tint = bases[base_number].color;

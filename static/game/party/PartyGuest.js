@@ -1,36 +1,24 @@
 import {scene_manager} from "../world/SceneManager.js";
 
-
-
 class PartyGuest {
-    constructor() {
-        // tell the game manager i'm ready to play
-        this.player_id = "player2";
-        this.guest_number = null;
-        this.players = null;
+    constructor(playerNumber, players, socket) {
+        this.guest_number = playerNumber;
+        this.players = players;
+        this.socket = socket;
+
+        this.socket.on("PLAYER_EVENT", (type, data) => {
+            console.log("event received!");
+            // console.log(type);
+            // console.log(data);
+            // return;
+            this.receiveEvent(JSON.parse(type), JSON.parse(data));
+        })
     }
 
-    // communicates with the game manager
-    // communicates with other players
-    // implements scene changes
-    // controls the active scene
-
-   
-    /* communication with GameManager:
-    *********************************************/
-    reportPlayerInitialized() {
-        // send player id
-        // get back players
-        this.players = ["player1", "player2", "player3", "player4"];
-        for (var player in this.players) {
-            if (this.players[player] == this.player_id)
-                this.guest_number = parseInt(player) + 1;
-        }
-
-    }
     
     loadScene(scene_id) {
         var scene_data = null;
+        
         if (scene_manager.current_scene) {
             scene_data = scene_manager.current_scene.getSceneData();        
         }
@@ -43,8 +31,7 @@ class PartyGuest {
     events that happen in this gamescene:
     *********************************************/
     broadcastEvent(type, data) {
-        console.log(type);
-        console.log(data);
+        this.socket.emit("PLAYER_EVENT", JSON.stringify(type), JSON.stringify(data));
     }
 
     receiveEvent(type, data) {

@@ -13,8 +13,9 @@ socket.emit("REQUEST_JOIN_PARTY", playerName, partyId);
 socket.on("REQUEST_JOIN_PARTY_RESPONSE", function(canJoin, pNumber) {
 	if (canJoin) {
 		playerNumber = pNumber;
-		console.log("can join party!");
+		console.log("joined party");
 		goToLobby() // fixed for now.
+
 	} else {
 		console.log("can not join party!");
 		alert("This party is full");
@@ -45,7 +46,7 @@ function goToLobby() {
 
 function goToGame() {
 	console.log("game here!");
-	console.log(playerNumber);
+	console.log("you are player " + playerNumber);
 	if(currentScene) currentScene.unmount(); 
 	currentScene = new Game(socket, playerNumber);
 }

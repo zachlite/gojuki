@@ -3,32 +3,47 @@ let PIXI = require("pixi.js");
 import GameLoop from "./core/GameLoop.js";
 import GameUpdater from "./core/GameUpdater.js";
 import GameRenderer from "./core/GameRenderer.js";
-import PartyHost from "./party/PartyHost.js";
 import PartyGuest from "./party/PartyGuest.js";
 
 class Game {
 
-    constructor () {
-        this.game_time = 20 * 1000;
-        this.init(false);
-        this.play();
+    constructor (socket, playerNumber) {
+        this.playerNumber = playerNumber;
+        this.socket = socket;
+        this.game_time = 60 * 1000; // 60 seconds
+
+        this.socket.on("NEED_PLAYERS_RESPONSE", (players) => {
+            this.init(players);
+            this.play();
+        }); 
+
+        this.socket.emit("NEED_PLAYERS");
     }
 
-    init(is_host) {
+    init(players) {
 
-        if (is_host) {
-            this.party_host = new PartyHost();
+        this.party_guest = new PartyGuest(this.playerNumber, players, this.socket);
+        this.party_guest.loadScene("game");
+
+        if (this.playerNumber == 1) {
+            var interval = 1000;
+            var timer = setInterval(() => {
+                this.game_time -= interval;
+                if (this.game_time < 0) {
+                    clearInterval(timer);
+                    console.log("game over");
+                    this.socket.emit("GAME_OVER")
+                    return;
+                } else {
+                    console.log("tick: " + this.game_time);
+                    this.socket.emit("GAME_TIME_TICK", this.game_time);                
+                }
+            }, interval);
         }
 
-        this.party_guest = new PartyGuest();
-
-
-        // mock interactions
-        this.party_guest.reportPlayerInitialized();
-        // 
-        // this.party_host.acknowledgeGuestJoined();
-
-        this.party_guest.loadScene("game");
+        this.socket.on("GAME_TIME_TICKED", (gameTime) => {
+            this.party_guest.receiveEvent("game_time_tick", gameTime);
+        });
 
         // var interval = 1000;
         // var timer = setInterval(() => {
@@ -74,8 +89,6 @@ class Game {
 
         this.game_updater = new GameUpdater();
         this.game_renderer = new GameRenderer();
-
-        return true;
     }
 
     play() {
