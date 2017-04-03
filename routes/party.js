@@ -23,5 +23,4 @@ party.get("/:party_id", function(req, res) {
 
 
 
-
 module.exports = party;

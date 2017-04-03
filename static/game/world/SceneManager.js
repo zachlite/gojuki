@@ -1,23 +1,33 @@
-import IntroScene from "./IntroScene.js";
 import GameScene from "./GameScene.js";
-import UpgradeScene from "./UpgradeScene.js";
 
 class SceneManager {
 
     constructor() {
         this.scenes = {
-            "intro": IntroScene,
-            "game": GameScene,
-            "upgrades": UpgradeScene
+            "game": GameScene
         };
 
-        this.current_scene = null;
+        this.currentScene = null;
     }
 
-    createScene(scene_id, player, scene_data) {
-        this.current_scene = new this.scenes[scene_id](player, scene_data);
+    createScene(sceneId, player, sceneData) {
+        this.currentScene = new this.scenes[sceneId](player, sceneData);
+    }
+
+    getSceneData() {
+        if (this.currentScene) {
+            return this.currentScene.getSceneData();
+        } else {
+            return null;
+        }
+    }
+
+    deleteScene() {
+        if (this.currentScene) {
+            delete this.currentScene;
+        }
     }
 
 }
 
-export let scene_manager = new SceneManager();
+export let sceneManager = new SceneManager();

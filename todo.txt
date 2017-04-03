@@ -1,0 +1,18 @@
+Food renders in the wrong position
+position to drop goo
+able to hold space bar and drop goo on release
+starting a round with data, getting data from ended round
+displaying the amount of food a bug is carrying
+displaying the name of a bug
+end game timer triggers next scenex
+replacing rectangles with images
+
+
+
+
+
+
+bases 3 and 4 aren't rendering
+display number of food carrying along with limit
+end game screen
+replace rectangles with bugs

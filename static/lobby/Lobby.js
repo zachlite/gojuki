@@ -4,18 +4,25 @@ import IO from "socket.io-client";
 
 class Lobby {
 	constructor(socket, playerNumber) {
-		const party = document.getElementById('party');
+		var lobby = document.createElement('div');
+		lobby.setAttribute("id", "lobby");
+		document.getElementById("party").appendChild(lobby);
 		var lobbyView = React.createElement(LobbyView, 
 			{
 				"socket": socket, 
 				"playerNumber": playerNumber
 			}
 		);
-		ReactDOM.render(lobbyView, party);
+		ReactDOM.render(lobbyView, document.getElementById('lobby'));
 	}
-	unmount() {
-		var party = document.getElementById("party");
-		party.parentNode.removeChild(party);
+
+	stop() {
+		var lobby = document.getElementById("lobby");
+		lobby.parentNode.removeChild(lobby);
+	}
+
+	getPlayerData() {
+		
 	}
 }
 

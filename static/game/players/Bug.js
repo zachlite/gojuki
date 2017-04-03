@@ -133,10 +133,13 @@ class Bug {
     }
 
     stuckInGoo() {
-        var initial = this.v_max;
+        var initial_v_max = this.v_max;
+        var initial_v_max_reverse = this.v_max_reverse;
         this.v_max = .5;
+        this.v_max_reverse = -.5;
         setTimeout(() => {
-            this.v_max = initial;
+            this.v_max = initial_v_max;
+            this.v_max_reverse = initial_v_max_reverse;
         }, 5000);
     }
 

@@ -1,0 +1,69 @@
+<style type="text/css">
+	
+	body {
+		margin: 0px;
+	}
+
+	#upgrades {
+		width: 50%;
+	}
+
+	.item-wrapper {
+		float: left;
+		/*background-color: purple;*/
+		width: 50%;
+	}
+
+	.item {
+		border: 1px solid #ccc;
+		padding: 30px;
+		margin: 100px 40px;
+		width: 200px;
+		/*background-color: red;*/
+	}
+
+	.disabled {
+		opacity: .25;
+		pointer-events: none;
+	}
+</style>
+
+<div id="upgrades">
+
+	<h1>Food:<span id="food">{{data.food}}</span></h1>
+	<h1>Time to next round: <span id="time-left">30</span> seconds...</h1>
+
+	<div class="item-wrapper">
+		<div class="item" data-type="food_carry_limit" data-cost="3">
+			<h3>Food Carry Limit</h3>
+			<p>Increase the amount of food you can hold before needing to return to your base.</p>
+			<p>Cost: 3</p>
+
+			<strong class="amount">{{data.food_carry_limit}}</strong>
+			<button class="sell-btn">-</button>
+			<button class="buy-btn">+</button>
+		</div>
+		<div class="item" data-type="speed" data-cost="5">
+			<h3>Speed</h3>
+			<p>Increase your top speed.</p>
+			<p>Cost: 5</p>
+
+			<strong class="amount">{{data.speed}}</strong>
+			<button class="sell-btn">-</button>
+			<button class="buy-btn">+</button>
+		</div>
+	</div>
+	<div class="item-wrapper">
+		<div class="item" data-type="goo" data-cost="10">
+			<h3>Sticky Goo</h3>
+			<p>Drop sticky goo to slow your opponents down for 5 seconds</p>
+			<p>Cost: 10</p>
+
+			<strong class="amount">{{data.goo}}</strong>
+			<button class="sell-btn">-</button>
+			<button class="buy-btn">+</button>
+		</div>
+	</div>
+
+
+</div>

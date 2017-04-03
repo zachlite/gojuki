@@ -5,10 +5,6 @@ import Scene from "./Scene.js";
 import Bug from "./../players/Bug.js";
 import Base from "./components/Base.js";
 
-// player moved
-// player deployed goo
-// player got stuck in goo
-
 
 class GameScene extends Scene {
     constructor(party_guest, scene_data) {
@@ -16,12 +12,6 @@ class GameScene extends Scene {
 
         this.party_guest = party_guest;
         
-        scene_data = scene_data || {
-            food: 0,
-            food_carry_limit: 5,
-            speed: 5,
-            goo: 3
-        };
 
         // food
         this.food_carry_limit = scene_data.food_carry_limit;
@@ -38,7 +28,7 @@ class GameScene extends Scene {
             var p = parseInt(player) + 1;
             if (p != this.party_guest.guest_number) {
                 
-                var base = new Base(p, 0);
+                var base = new Base(p, 0, this.party_guest.players[player]);
                 var bug = new Bug(p, 5);
                 
                 this.stage.addChild(base.sprite);
@@ -51,10 +41,11 @@ class GameScene extends Scene {
             }
         }
 
-        var player_num = parseInt(this.party_guest.guest_number);
-
-        this.base = new Base(player_num, this.food);
-        this.bug = new Bug(player_num, this.speed);
+        this.base = new Base(this.party_guest.guest_number, this.food, this.party_guest.players[this.party_guest.guest_number - 1]);
+        this.bug = new Bug(this.party_guest.guest_number, this.speed);
+        this.last_rotation = null;
+        this.last_x = null;
+        this.last_y = null;
 
         this.stage.addChild(this.base.sprite);
         this.stage.addChild(this.bug.sprite);
@@ -95,7 +86,7 @@ class GameScene extends Scene {
 
         this.didPlayerGetStuckInGoo();
 
-        // this.didBugCollectPowerup();
+        this.didPlayerChangePosition();
 
     }
 
@@ -115,8 +106,13 @@ class GameScene extends Scene {
                 break;
             case "food_eaten":
                 this.removeFood(data);
+                break;
             case "goo_created": 
                 this.makeGoo(data);
+                break;
+            case "goo_used":
+                this.removeGoo(data);
+                break;
             case "game_time_tick":
                 this.didTimeChange(data);
                 break;
@@ -126,8 +122,19 @@ class GameScene extends Scene {
             case "returned_to_base":
                 this.updatePlayerBase(data);
                 break;
-
+            case "player_moved":
+                this.updatePlayerPosition(data);
+                break;
         }
+    }
+
+    updatePlayerPosition(data) {
+        console.log("player changed position");
+        console.log(data);
+        var opponent = this.opponents[this.party_guest.players[data.playerNumber - 1]];
+        opponent.bug.sprite.rotation = data.rotation;
+        opponent.bug.sprite.x = data.x;
+        opponent.bug.sprite.y = data.y;
     }
 
     updatePlayerBase(data) {
@@ -196,16 +203,22 @@ class GameScene extends Scene {
     didPlayerGetStuckInGoo() {
         for (var goo in this.goos) {
             if (Utils.hitTestRectangle(this.goos[goo], this.bug.sprite)) {
-                this.stage.removeChild(this.goos[goo]);
-                this.goos.splice(goo, 1);
 
+                this.removeGoo(goo);
                 // apply effects to player
                 console.log("stuck in goo");
                 this.bug.stuckInGoo();
+                this.party_guest.broadcastEvent("goo_used", goo);
             }
         }
     }
 
+    removeGoo(goo) {
+        this.stage.removeChild(this.goos[goo]);
+        this.goos.splice(goo, 1);
+    }
+
+    // not used
     didBugCollectPowerup() {
         for (var powerup in this.powerups) {
             if (Utils.hitTestRectangle(this.powerups[powerup], this.bug.sprite)) {
@@ -219,6 +232,25 @@ class GameScene extends Scene {
 
             }
         }
+    }
+
+    didPlayerChangePosition() {
+
+        if (Math.abs(this.bug.sprite.rotation - this.last_rotation) > .1 ||
+            Math.round(this.bug.sprite.x) != Math.round(this.last_x) ||
+            Math.round(this.bug.sprite.y) != Math.round(this.last_y)) {
+
+            this.party_guest.broadcastEvent("player_moved", {
+                    playerNumber: this.party_guest.guest_number,
+                    rotation: this.bug.sprite.rotation,
+                    x: this.bug.sprite.x,
+                    y: this.bug.sprite.y
+                });
+        }
+
+        this.last_rotation = this.bug.sprite.rotation;
+        this.last_x = this.bug.sprite.x;
+        this.last_y = this.bug.sprite.y;
     }
 
     doMakeGoo() {
@@ -248,10 +280,10 @@ class GameScene extends Scene {
 
     doMakeFood() {
         var food = this.makeFood();
-        this.party_guest.broadcastEvent("food_created", {x: food.position.x, y: food.position.y});
+        this.party_guest.broadcastEvent("food_created", {x: food.position.x, y: food.position.y, rotation: food.rotation});
     }
 
-    makeFood(position) {
+    makeFood(position, rotation) {
         
         var food = new PIXI.Sprite(this.food_texture);
         
@@ -268,7 +300,7 @@ class GameScene extends Scene {
         }
     
         food.scale.set(0.2, 0.2);
-        food.rotation = Math.random() * 2 * Math.PI;
+        food.rotation = rotation || Math.random() * 2 * Math.PI;
         this.stage.addChild(food);
         this.foods.push(food);
 

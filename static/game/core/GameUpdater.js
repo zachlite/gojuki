@@ -1,4 +1,4 @@
-import {scene_manager} from "./../world/SceneManager.js";
+import {sceneManager} from "./../world/SceneManager.js";
 
 class GameUpdater {
     constructor () {
@@ -7,8 +7,8 @@ class GameUpdater {
 
     update() {
         // update the current scene
-        if (scene_manager.current_scene) {
-            scene_manager.current_scene.update();        
+        if (sceneManager.currentScene) {
+            sceneManager.currentScene.update();        
         }
     }
 }

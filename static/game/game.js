@@ -4,26 +4,34 @@ import GameLoop from "./core/GameLoop.js";
 import GameUpdater from "./core/GameUpdater.js";
 import GameRenderer from "./core/GameRenderer.js";
 import PartyGuest from "./party/PartyGuest.js";
+import {sceneManager} from "./world/SceneManager.js";
 
 class Game {
 
-    constructor (socket, playerNumber) {
+    constructor (socket, playerNumber, playerData) {
         this.playerNumber = playerNumber;
         this.socket = socket;
-        this.game_time = 60 * 1000; // 60 seconds
+        this.game_time = 30 * 1000; // 60 seconds
 
         this.socket.on("NEED_PLAYERS_RESPONSE", (players) => {
-            this.init(players);
+            this.init(players, playerData);
             this.play();
         }); 
 
         this.socket.emit("NEED_PLAYERS");
     }
 
-    init(players) {
+    init(players, playerData) {
 
-        this.party_guest = new PartyGuest(this.playerNumber, players, this.socket);
-        this.party_guest.loadScene("game");
+        var playerData = playerData || {
+            food: 0,
+            food_carry_limit: 5,
+            speed: 5,
+            goo: 0
+        };
+
+        this.partyGuest = new PartyGuest(this.playerNumber, players, this.socket);
+        sceneManager.createScene("game", this.partyGuest, playerData);
 
         if (this.playerNumber == 1) {
             var interval = 1000;
@@ -42,7 +50,7 @@ class Game {
         }
 
         this.socket.on("GAME_TIME_TICKED", (gameTime) => {
-            this.party_guest.receiveEvent("game_time_tick", gameTime);
+            this.partyGuest.receiveEvent("game_time_tick", gameTime);
         });
 
         // var interval = 1000;
@@ -50,17 +58,17 @@ class Game {
         //     this.game_time -= interval;
         //     if (this.game_time < 0) {
         //         clearInterval(timer);
-        //         this.party_guest.loadScene("upgrades");
+        //         this.partyGuest.loadScene("upgrades");
         //         return;
         //     }
-        //     this.party_guest.receiveEvent("game_time_tick", this.game_time);
+        //     this.partyGuest.receiveEvent("game_time_tick", this.game_time);
         // }, interval);
 
 
 
         //...
-        // this.party_guest.receiveEvent("food_created", {"x" : 30, "y" : 100});
-        // this.party_guest.receiveEvent("goo_created", {"x" : 300, "y" : 100});
+        // this.partyGuest.receiveEvent("food_created", {"x" : 30, "y" : 100});
+        // this.partyGuest.receiveEvent("goo_created", {"x" : 300, "y" : 100});
 
 
         // // mocked timer. should happen in party host
@@ -69,13 +77,13 @@ class Game {
         //     this.game_time -= interval;
         //     if (this.game_time < 0) {
         //         clearInterval(timer);
-        //         this.party_guest.loadScene("upgrades");
+        //         this.partyGuest.loadScene("upgrades");
         //         return;
         //     }
-        //     this.party_guest.receiveEvent("game_time_tick", this.game_time);
+        //     this.partyGuest.receiveEvent("game_time_tick", this.game_time);
             
         //     // mock opponent movement
-        //     this.party_guest.receiveEvent("opponent_position", {
+        //     this.partyGuest.receiveEvent("opponent_position", {
         //         "opponent_id": "player3",
         //         "position": {"x": 300 + (this.game_time / 1000.0) * 5, "y": 300},
         //         "rotation": 0
@@ -100,6 +108,23 @@ class Game {
 
     }
 
+    getPlayerData() {
+        return sceneManager.getSceneData();
+    }
+
+    stop() {
+        console.log("STOPPING GAME");
+        this.gameLoop.stop();
+        this.partyGuest.destroy();
+        delete this.gameLoop;
+        delete this.partyGuest;
+        sceneManager.deleteScene();
+        this.socket.removeAllListeners("NEED_PLAYERS_RESPONSE");
+        this.socket.removeAllListeners("GAME_TIME_TICKED");
+        
+        var canvas = document.getElementsByTagName('canvas')[0];
+        canvas.parentNode.removeChild(canvas);
+    }
 
 }
 

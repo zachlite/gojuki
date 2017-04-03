@@ -1,4 +1,4 @@
-import {scene_manager} from "./../world/SceneManager.js";
+import {sceneManager} from "./../world/SceneManager.js";
 import Window from "./../utils/Window.js";
 
 class GameRenderer {
@@ -12,9 +12,9 @@ class GameRenderer {
     }
 
     render() {
-        if (scene_manager.current_scene) {
+        if (sceneManager.currentScene) {
             this.renderer.render(
-                scene_manager.current_scene.stage
+                sceneManager.currentScene.stage
             );
         }
     }
