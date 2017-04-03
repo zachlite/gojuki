@@ -14,6 +14,7 @@ app.disable('view cache');
 
 app.use("/static", express.static(path.join(__dirname, "/static")));
 app.use("/img", express.static(path.join(__dirname, "/img")));
+app.use("/style", express.static(path.join(__dirname, "/style")));
 
 app.get("/", function(req, res) {
     res.sendFile(__dirname + '/views/index.html');

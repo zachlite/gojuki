@@ -33,8 +33,9 @@ class Bug {
     }
 
     initSprite(bugs, number) {
+
         var sprite = new PIXI.Sprite(
-            PIXI.Texture.fromImage("/img/bug.png")
+            PIXI.Texture.fromImage("/img/bug/bug1.png")
         );
 
         sprite.tint = bugs[number].color;
