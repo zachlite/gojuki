@@ -8,7 +8,7 @@ class GameRenderer {
             Window.screen_height
         );
 
-        document.body.appendChild(this.renderer.view);
+        document.getElementById("party").appendChild(this.renderer.view);
     }
 
     render() {

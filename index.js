@@ -17,7 +17,7 @@ app.use("/img", express.static(path.join(__dirname, "/img")));
 app.use("/style", express.static(path.join(__dirname, "/style")));
 
 app.get("/", function(req, res) {
-    res.sendFile(__dirname + '/views/index.html');
+	res.render("index");
 });
 
 app.use("/party", party);
@@ -69,7 +69,7 @@ io.sockets.on("connection", function(socket) {
 		var partyId = socket.partyId;
 		var players = getPlayersInParty(partyId);
 		io.in(partyId).emit("PLAYER_JOINED_LOBBY", players);
-		if (players.length == 2) {
+		if (players.length == 4) {
 			io.in(partyId).emit("LOBBY_ENDED", players);
 		}
 	});

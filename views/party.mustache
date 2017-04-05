@@ -2,10 +2,25 @@
 <html>
 <head>
 	<title>Party</title>
+	<script type="text/javascript" src="/static/dist/shared.bundle.js"></script>
+	<link href="https://fonts.googleapis.com/css?family=Press+Start+2P" rel="stylesheet">
+	<link rel="stylesheet" type="text/css" href="/style/main.css">
+	<link rel="stylesheet" type="text/css" href="/style/party.css">
+	<link rel="stylesheet" type="text/css" href="/style/howtoplay.css">
 </head>
 <body>
-	<h1>Party</h1>
-	<div id="party" data-party-id="{{party_id}}"></div>
+
+	<div id="menu-bar">
+		<a class="link" href="/">Home</a>
+		<a class="link" data-remodal-target="how-to-play-modal">How to play</a>
+	</div>
+
+	<div id="party-wrapper">
+		<div id="party" data-party-id="{{party_id}}"></div>
+	</div>
+
+	{{>howtoplay}}
+
 	<script type="text/javascript" src="/static/dist/party.bundle.js"></script>
 </body>
 </html>

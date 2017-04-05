@@ -1,0 +1,42 @@
+#menu-bar {
+	margin: 30px;
+}
+
+#menu-bar a {
+	margin-right: 30px;
+}
+
+#party-wrapper {
+	margin-top: 50px;
+	text-align: center;
+}
+
+#lobby-message {
+	color: white;
+}
+
+#player-list {
+	margin-top: 50px;
+	list-style-type: none;
+	padding: 0;
+}
+
+.player {
+	margin: 20px 0px;
+}
+
+.player-1 {
+	color: #E93F3F;
+}
+
+.player-2 {
+	color: #3FE992;
+}
+
+.player-3 {
+	color: #3FD3E9;
+}
+
+.player-4 {
+	color: #E93FDB;
+}

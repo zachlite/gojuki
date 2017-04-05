@@ -62,9 +62,8 @@ class LobbyView extends React.Component {
 	render() {
 		return (
 			<div>
-				<a href="/">Home</a>
 				<h1>Party Lobby</h1>
-				<h3>Waiting for {this.state.playersMissing} more player(s)...</h3>
+				<h3 id="lobby-message">Waiting for {this.state.playersMissing} more player(s)...</h3>
 				<PlayerList players={this.state.players}/>
 			</div>
 		);	
@@ -74,9 +73,9 @@ class LobbyView extends React.Component {
 class PlayerList extends React.Component {
 	render() {
 		return (
-			<ul>
+			<ul id="player-list">
 				{this.props.players.map((playerName, index) => (
-					<li key={index}>player {index + 1}: {playerName}</li>
+					<li className={"player player-" + (index + 1)} key={index}>player {index + 1}: {playerName}</li>
 				))}
 			</ul>
 		);

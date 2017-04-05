@@ -1,0 +1,39 @@
+<!DOCTYPE html>
+<html>
+<head>
+	<title>Gojuki</title>
+	<script type="text/javascript" src="/static/dist/shared.bundle.js"></script>
+	<link href="https://fonts.googleapis.com/css?family=Press+Start+2P" rel="stylesheet">
+	<link rel="stylesheet" type="text/css" href="/style/main.css">
+	<link rel="stylesheet" type="text/css" href="/style/home.css">
+	<link rel="stylesheet" type="text/css" href="/style/howtoplay.css">
+</head>
+<body>
+
+	<div id="content">
+		<h1 class="jumbo">GoJuki</h1>
+		<a href="/party"><button id="play-btn" class="btn-primary">Play</button></a>
+		<div id="links">
+			<a class="link" href="#" data-remodal-target="how-to-play-modal">How to play</a>
+			<a class="link" href="#" data-remodal-target="about-modal">About</a>
+		</div>
+	</div>
+
+	<div class="remodal" 
+		data-remodal-id="about-modal" 
+		data-remodal-options="hashTracking: false, closeOnOutsideClick: true" 
+		id="how-to-play"
+		>
+		<button data-remodal-action="close" class="remodal-close"></button>
+		<h1 class="large">About</h1>
+		<p>Hungry, Hungry, ...Cockroaches?</p>
+		<p>This is what insects do in your kitchen when you're sleeping.</p>
+		<br><br>
+		<button data-remodal-action="confirm" class="remodal-confirm">OK</button>
+	</div>
+
+
+	{{>howtoplay}}
+
+</body>
+</html>

@@ -40,7 +40,7 @@ class Game {
                 if (this.game_time < 0) {
                     clearInterval(timer);
                     console.log("game over");
-                    this.socket.emit("GAME_OVER")
+                    // this.socket.emit("GAME_OVER")
                     return;
                 } else {
                     console.log("tick: " + this.game_time);

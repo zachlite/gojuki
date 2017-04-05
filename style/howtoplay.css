@@ -1,0 +1,10 @@
+#how-to-play {
+	width: 500px;
+}
+
+#how-to-play .instruction {
+	color: black;
+	margin: 30px;
+	line-height: 1.75;
+	font-size: 14px;
+}

@@ -1,6 +1,7 @@
 module.exports = {
     entry: {
         party: "./static/gojuki-client.js",
+        shared: "./static/shared/shared.js"
     },
     output: {
         filename: './static/dist/[name].bundle.js'
@@ -14,6 +15,10 @@ module.exports = {
                 query: {
                     presets: ["react", "es2015"]
                 }
+            },
+            {
+                test: /\.css$/,
+                use: ['style-loader', 'css-loader']
             }
         ]
     },
