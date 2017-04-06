@@ -40,3 +40,7 @@
 .player-4 {
 	color: #E93FDB;
 }
+
+canvas {
+	border: 1px solid #e91e63;
+}

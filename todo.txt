@@ -9,15 +9,13 @@ replacing rectangles with images
 
 
 
-
-
-
 bases 3 and 4 aren't rendering
 display number of food carrying along with limit
 end game screen
-replace rectangles with bugs
 add music
-prevent bug from running off screen
 reposition time remaining
 add border to canvas
+add round count!
+style upgrades
+show goo inventory
 have players join existing parties that are available automatically

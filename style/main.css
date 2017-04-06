@@ -24,3 +24,7 @@ h1 {
 	color: #F8E81C;
 	text-decoration: none;
 }
+
+p {
+	line-height: 1.5;
+}

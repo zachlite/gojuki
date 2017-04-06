@@ -33,19 +33,19 @@ class Bug {
     }
 
     initSprite(bugs, number) {
+        var frames = [];
+        for (var i = 1; i <= 4; i++) {
+            frames.push(PIXI.Texture.fromImage("/img/bug/bug" + i + ".png"))
+        }
 
-        var sprite = new PIXI.Sprite(
-            PIXI.Texture.fromImage("/img/bug/bug1.png")
-        );
-
-        sprite.tint = bugs[number].color;
-        sprite.position.copy(bugs[number].position);
-        sprite.width = 10;
-        sprite.height = 20;
-
-        sprite.anchor.set(.5, .7);
-        
-        return sprite;
+        var bug = new PIXI.extras.AnimatedSprite(frames);
+        bug.position.copy(bugs[number].position);
+        bug.tint = bugs[number].color;
+        bug.anchor.set(.5, .7);
+        bug.scale.x *= .1;
+        bug.scale.y *= .1;
+        bug.animationSpeed = .25;
+        return bug;
     }
 
     update () {
@@ -64,15 +64,25 @@ class Bug {
             this.coast();
         }
 
+        if (this.v > 0) {
+            this.sprite.play();
+        } else {
+            this.sprite.stop();
+        }
 
-        // good to know...
-        // 
-        // if (this.sprite.position.x > Window.screen_width - this.sprite.width / 2.0) {
-        //     this.sprite.position.x = Window.screen_width - this.sprite.width / 2.0;
-        //     this.v_max = Math.min(Math.abs(5.0 / Math.cos(this.sprite.rotation)), 10);
-        // } else {
-        //     this.v_max = 10;
-        // }
+
+        if (this.sprite.position.x > Window.screen_width - this.sprite.width / 2.0) {
+            this.sprite.position.x = Window.screen_width - this.sprite.width / 2.0;
+        
+        } else if (this.sprite.position.x < 0 + this.sprite.width / 2.0) {
+            this.sprite.position.x = 0 + this.sprite.width / 2.0;
+        
+        } else if (this.sprite.position.y > Window.screen_height - this.sprite.height / 2.0) {
+            this.sprite.position.y = Window.screen_height - this.sprite.height / 2.0;
+        
+        } else if (this.sprite.position.y < 0 + this.sprite.height / 2.0) {
+            this.sprite.position.y =0 + this.sprite.height / 2.0;
+        }
 
     }
 

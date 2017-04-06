@@ -1,3 +1,5 @@
+const UglifyJSPlugin = require('uglifyjs-webpack-plugin');
+
 module.exports = {
     entry: {
         party: "./static/gojuki-client.js",
@@ -22,6 +24,9 @@ module.exports = {
             }
         ]
     },
+    plugins: [
+        // new UglifyJSPlugin()
+    ],
     devServer: {
         host: '0.0.0.0',
         port: 8080
