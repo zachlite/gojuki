@@ -7,7 +7,7 @@ import Base from "./components/Base.js";
 
 
 class GameScene extends Scene {
-    constructor(party_guest, scene_data) {
+    constructor(party_guest, scene_data, roundNumber) {
         super();
 
         this.party_guest = party_guest;
@@ -52,11 +52,33 @@ class GameScene extends Scene {
         this.actors.push(this.bug);
 
 
-        // game clock
-        this.time_remaining = new PIXI.Text("TIME REMAINING: 60", {fill: 0xffffff});
-        this.time_remaining.position.set(Window.screen_width - this.time_remaining.width - 20, 0);
-        this.stage.addChild(this.time_remaining);
+        // game HUD
+        this.hud = new PIXI.Graphics();
+        this.hud.beginFill(0x460a20);
+        this.hud.drawRect(0, 0, Window.screen_width, Window.screen_height - Window.playable_height);
+        this.stage.addChild(this.hud);
 
+        var textOptions = {fill: 0xffffff, fontSize: 13};
+        var hudTextHeight = 13;
+        // game clock
+        this.time_remaining = new PIXI.Text("Time Left: 60", textOptions);
+        this.time_remaining.position.set(Window.screen_width - this.time_remaining.width - 20, hudTextHeight);
+        this.hud.addChild(this.time_remaining);
+
+        // food carrying
+        this.foodHUD = new PIXI.Text("Food carrying: 0/"+this.food_carry_limit.toString(), textOptions);
+        this.foodHUD.position.set(20, hudTextHeight);
+        this.hud.addChild(this.foodHUD);
+
+        // goos carrying
+        this.gooHUD = new PIXI.Text("Sticky Goo: " + this.goo, textOptions);
+        this.gooHUD.position.set(this.foodHUD.x + this.foodHUD.width + 30, hudTextHeight);
+        this.hud.addChild(this.gooHUD);
+
+        // round
+        var roundHUD = new PIXI.Text("ROUND: " + roundNumber, textOptions);
+        roundHUD.position.set((Window.screen_width / 2.0) - (roundHUD.width / 2.0), hudTextHeight);
+        this.hud.addChild(roundHUD);
 
         this.goo_texture = PIXI.Texture.fromImage("/img/goo.png");
         this.goos = [];
@@ -129,8 +151,6 @@ class GameScene extends Scene {
     }
 
     updatePlayerPosition(data) {
-        console.log("player changed position");
-        console.log(data);
         var opponent = this.opponents[this.party_guest.players[data.playerNumber - 1]];
         opponent.bug.sprite.rotation = data.rotation;
         opponent.bug.sprite.x = data.x;
@@ -146,7 +166,7 @@ class GameScene extends Scene {
     }
 
     didTimeChange(time) {
-        this.time_remaining.text = "TIME REMAINING: " + (time / 1000.0).toString();
+        this.time_remaining.text = "Time left: " + (time / 1000.0).toString();
     }
 
     didPlayerEatFood() {
@@ -158,9 +178,11 @@ class GameScene extends Scene {
                 if (this.food_carrying < this.food_carry_limit) {
                     this.food_carrying += 1;
 
+                    // update the HUD
+                    this.foodHUD.text = "Food carrying: " + this.food_carrying + "/" + this.food_carry_limit;
+
                     // the food gets removed
                     this.removeFood(food);
-
                     this.party_guest.broadcastEvent("food_eaten", food);
 
                     // make more food
@@ -178,10 +200,10 @@ class GameScene extends Scene {
     didPlayerReturnToBase() {
         if (Utils.hitTestRectangle(this.base.sprite, this.bug.sprite)) {
             
-            console.log(this.food_carrying);
             this.food += this.food_carrying;
             this.base.updateFoodCollectedDisplay(this.food);
             this.food_carrying = 0;
+            this.foodHUD.text = "Food carrying: " + this.food_carrying + "/" + this.food_carry_limit;
             this.party_guest.broadcastEvent("returned_to_base", {foodCount: this.food, playerNumber: this.party_guest.guest_number});
         }
     }
@@ -295,7 +317,7 @@ class GameScene extends Scene {
         } else {
             food.position.set(
                 Math.random() * Window.screen_width,
-                Math.random() * Window.screen_height
+                (Math.random() * Window.playable_height) + (Window.screen_height - Window.playable_height + 3)
             );
         }
     
@@ -313,7 +335,7 @@ class GameScene extends Scene {
 
         powerup.position.set(
             Math.random() * Window.screen_width,
-            Math.random() * Window.screen_height
+            (Math.random() * Window.playable_height) + (Window.screen_height - Window.playable_height + 3)
         );
 
         this.stage.addChild(powerup);

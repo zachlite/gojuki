@@ -16,6 +16,7 @@ add music
 reposition time remaining
 add border to canvas
 add round count!
+play error sound if trying to pick up food but full
 style upgrades
 show goo inventory
 have players join existing parties that are available automatically

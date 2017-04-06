@@ -8,30 +8,30 @@ import {sceneManager} from "./world/SceneManager.js";
 
 class Game {
 
-    constructor (socket, playerNumber, playerData) {
+    constructor (socket, playerNumber, playerData, roundNumber) {
         this.playerNumber = playerNumber;
         this.socket = socket;
         this.game_time = 30 * 1000; // 60 seconds
 
         this.socket.on("NEED_PLAYERS_RESPONSE", (players) => {
-            this.init(players, playerData);
+            this.init(players, playerData, roundNumber);
             this.play();
         }); 
 
         this.socket.emit("NEED_PLAYERS");
     }
 
-    init(players, playerData) {
+    init(players, playerData, roundNumber) {
 
         var playerData = playerData || {
             food: 0,
-            food_carry_limit: 5,
+            food_carry_limit: 50,
             speed: 5,
             goo: 0
         };
 
         this.partyGuest = new PartyGuest(this.playerNumber, players, this.socket);
-        sceneManager.createScene("game", this.partyGuest, playerData);
+        sceneManager.createScene("game", this.partyGuest, playerData, roundNumber);
 
         if (this.playerNumber == 1) {
             var interval = 1000;

@@ -76,12 +76,13 @@ class Bug {
         
         } else if (this.sprite.position.x < 0 + this.sprite.width / 2.0) {
             this.sprite.position.x = 0 + this.sprite.width / 2.0;
-        
-        } else if (this.sprite.position.y > Window.screen_height - this.sprite.height / 2.0) {
+        }
+
+        if (this.sprite.position.y > Window.screen_height - this.sprite.height / 2.0) {
             this.sprite.position.y = Window.screen_height - this.sprite.height / 2.0;
         
-        } else if (this.sprite.position.y < 0 + this.sprite.height / 2.0) {
-            this.sprite.position.y =0 + this.sprite.height / 2.0;
+        } else if (this.sprite.position.y < (Window.screen_height - Window.playable_height) + this.sprite.height / 2.0) {
+            this.sprite.position.y = (Window.screen_height - Window.playable_height) + this.sprite.height / 2.0;
         }
 
     }

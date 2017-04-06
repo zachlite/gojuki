@@ -1,22 +1,26 @@
+import Window from "./../../utils/Window.js";
+
 class Base {
     constructor(base_number, starting_value, playerName) {
+
+        var baseSize = 70;
 
         var bases = {
             "1": {
                 "color": "0xff0000",
-                "position": new PIXI.Point(0, 0)
+                "position": new PIXI.Point(0, Window.screen_height - Window.playable_height)
             },
             "2": {
                 "color": "0xffff00",
-                "position": new PIXI.Point(500, 0)
+                "position": new PIXI.Point(Window.screen_width - baseSize, Window.screen_height - Window.playable_height)
             },
             "3": {
                 "color": "0xff00ff",
-                "position": new PIXI.Point(0, 500)
+                "position": new PIXI.Point(0, Window.screen_height - baseSize)
             },
             "4": {
                 "color": "0x00ffff",
-                "position": new PIXI.Point(500, 500)
+                "position": new PIXI.Point(Window.screen_width - baseSize, Window.screen_height - baseSize)
             },
         }
 

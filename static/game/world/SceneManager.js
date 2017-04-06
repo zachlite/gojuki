@@ -10,8 +10,8 @@ class SceneManager {
         this.currentScene = null;
     }
 
-    createScene(sceneId, player, sceneData) {
-        this.currentScene = new this.scenes[sceneId](player, sceneData);
+    createScene(sceneId, player, sceneData, roundNumber) {
+        this.currentScene = new this.scenes[sceneId](player, sceneData, roundNumber);
     }
 
     getSceneData() {

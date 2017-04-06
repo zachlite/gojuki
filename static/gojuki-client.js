@@ -28,7 +28,7 @@ socket.on("REQUEST_JOIN_PARTY_RESPONSE", function(response) {
 
 var currentScene = null;
 var playerData = null;
-var roundsPlayed = 0;
+var roundNumber = 1;
 
 
 socket.on("LOBBY_ENDED", function() {
@@ -36,7 +36,9 @@ socket.on("LOBBY_ENDED", function() {
 });
 
 socket.on("GAME_ENDED", function(){
-	if (roundsPlayed < 3) {
+	roundNumber++;
+	
+	if (roundNumber < 4) {
 		goToUpgrades();
 	} else {
 		goToGameOver();
@@ -59,8 +61,7 @@ function goToGame() {
 		currentScene.stop();
 	}
 
-	roundsPlayed++;
-	currentScene = new Game(socket, playerNumber, playerData);
+	currentScene = new Game(socket, playerNumber, playerData, roundNumber);
 }
 
 function goToUpgrades() {
