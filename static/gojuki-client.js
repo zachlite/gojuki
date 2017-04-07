@@ -18,7 +18,7 @@ socket.emit("REQUEST_JOIN_PARTY", playerName, partyId);
 socket.on("REQUEST_JOIN_PARTY_RESPONSE", function(response) {
 	if (response.canJoin) {
 		playerNumber = response.playerNumber;
-		goToGame() // fixed for now.  go to currentScene
+		goToUpgrades() // fixed for now.  go to currentScene
 	} else {
 		alert(response.error);
 		window.location.href = "/";
@@ -72,6 +72,13 @@ function goToUpgrades() {
 		playerData = currentScene.getPlayerData();
 		currentScene.stop();
 	}
+
+	// playerData = {
+ //            food: 100,
+ //            food_carry_limit: 50,
+ //            speed: 5,
+ //            goo: 0
+	// }
 
 	currentScene = new Upgrades(socket, playerNumber, playerData);
 }

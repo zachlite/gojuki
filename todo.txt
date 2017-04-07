@@ -9,14 +9,15 @@ replacing rectangles with images
 
 
 
-bases 3 and 4 aren't rendering
-display number of food carrying along with limit
-end game screen
-add music
-reposition time remaining
-add border to canvas
-add round count!
-play error sound if trying to pick up food but full
 style upgrades
-show goo inventory
+end game screen
 have players join existing parties that are available automatically
+goo image and positioning
+base and player colors
+add music
+play error sound if trying to pick up food but full
+play sound on pickup food
+play sound on dropoff food
+play sound on drop goo
+play sound on stuck in goo
+
