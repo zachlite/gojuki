@@ -56,7 +56,8 @@
 	}
 	
 	.amount {
-		font-size: 24px;
+		font-size: 32px;
+		color: #e91e63;
 	}
 
 
@@ -75,37 +76,31 @@
 <div id="upgrades">
 
 	<div id="stats">
-		<h3 id="food-count">Food:<span id="food">{{data.food}}4</span></h3>
+		<h3 id="food-count">Food:<span id="food">{{data.food}}</span></h3>
 		<h3 id="time-count">Time to next round: <span id="time-left"></span> seconds...</h3>
 	</div>
 
 	<div id="items">
 		<div class="item" data-type="goo" data-cost="5">
 			<h3>Sticky Goo</h3>
-			<p>Drop sticky goo to slow your opponents down for 5 seconds.</p>
-
 			<br><strong class="amount">{{data.goo}}</strong><br><br><br>
-
+			<p>Drop sticky goo to slow your opponents down for 5 seconds.</p>
 			<button class="sell-btn">-</button>
 			<button class="buy-btn">+</button>
 			<p>Cost: 5</p>
 		</div>
 		<div class="item" data-type="speed" data-cost="8">
 			<h3>Speed</h3>
-			<p>Increase your top speed.</p>
-
 			<br><strong class="amount">{{data.speed}}</strong><br><br><br>
-
+			<p>Increase your top speed.</p>
 			<button class="sell-btn">-</button>
 			<button class="buy-btn">+</button>
 			<p>Cost: 8</p>
 		</div>
 		<div class="item" data-type="food_carry_limit" data-cost="10">
 			<h3>Food Carry Limit</h3>
-			<p>Increase the amount of food you can hold at once.</p>
-
 			<br><strong class="amount">{{data.food_carry_limit}}</strong><br><br><br>
-
+			<p>Increase the amount of food you can hold at once.</p>
 			<button class="sell-btn">-</button>
 			<button class="buy-btn">+</button>
 			<p>Cost: 10</p>

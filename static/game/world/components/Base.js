@@ -36,10 +36,13 @@ class Base {
 
         this.sprite.addChild(this.collected_text);
         this.sprite.addChild(this.playerNameText);
+
+        this.foodCollected = 0;
     }
 
     updateFoodCollectedDisplay(food) {
         this.collected_text.text = food.toString();
+        this.foodCollected = food;
     }
 }
 

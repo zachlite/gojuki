@@ -11,7 +11,7 @@ class Game {
     constructor (socket, playerNumber, playerData, roundNumber) {
         this.playerNumber = playerNumber;
         this.socket = socket;
-        this.game_time = 30 * 1000; // 60 seconds
+        this.game_time = 90 * 1000; // 60 seconds
 
         this.socket.on("NEED_PLAYERS_RESPONSE", (players) => {
             this.init(players, playerData, roundNumber);
@@ -25,7 +25,7 @@ class Game {
 
         var playerData = playerData || {
             food: 0,
-            food_carry_limit: 50,
+            food_carry_limit: 5,
             speed: 5,
             goo: 0
         };
@@ -39,11 +39,10 @@ class Game {
                 this.game_time -= interval;
                 if (this.game_time < 0) {
                     clearInterval(timer);
-                    console.log("game over");
-                    // this.socket.emit("GAME_OVER")
+                    console.log("game timer expired");
+                    this.socket.emit("GAME_OVER")
                     return;
                 } else {
-                    console.log("tick: " + this.game_time);
                     this.socket.emit("GAME_TIME_TICK", this.game_time);                
                 }
             }, interval);
@@ -106,6 +105,24 @@ class Game {
             this.game_renderer
         );
 
+    }
+
+    announceWinner() {
+
+        this.partyGuest.receiveEvent("announce_winner", null);
+
+        var winnerTime = 3000;
+        if (this.playerNumber == 1) {
+            var interval = 1000;
+            var timer = setInterval(() => {
+                winnerTime -= interval;
+                if (winnerTime < 0) {
+                    clearInterval(timer);
+                    this.socket.emit("WINNER_ANNOUNCEMENT_OVER")
+                    return;
+                }
+            }, interval);
+        }
     }
 
     getPlayerData() {

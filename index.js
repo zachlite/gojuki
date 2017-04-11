@@ -1,9 +1,9 @@
 var express = require("express");
-var party = require("./routes/party");
 var app = express();
 var http = require("http");
 var server = http.createServer(app);
 var io = require('socket.io').listen(server);
+var party = require("./routes/party")(io);
 var mustacheExpress = require("mustache-express");
 var path = require("path");
 
@@ -69,7 +69,7 @@ io.sockets.on("connection", function(socket) {
 		var partyId = socket.partyId;
 		var players = getPlayersInParty(partyId);
 		io.in(partyId).emit("PLAYER_JOINED_LOBBY", players);
-		if (players.length == 4) {
+		if (players.length == 2) {
 			io.in(partyId).emit("LOBBY_ENDED", players);
 		}
 	});
@@ -96,6 +96,10 @@ io.sockets.on("connection", function(socket) {
 
 	socket.on("PLAYER_EVENT", function (type, data) {
 		socket.broadcast.to(socket.partyId).emit("PLAYER_EVENT", type, data);
+	});
+
+	socket.on("WINNER_ANNOUNCEMENT_OVER", function () {
+		io.in(socket.partyId).emit("WINNER_ANNOUNCEMENT_ENDED");
 	});
 
 	socket.on("disconnect", function() {

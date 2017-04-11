@@ -9,8 +9,6 @@ replacing rectangles with images
 
 
 
-style upgrades
-end game screen
 have players join existing parties that are available automatically
 goo image and positioning
 base and player colors

@@ -4,14 +4,16 @@ import Window from "./../utils/Window.js";
 class Bug {
     constructor (number, v_max) {
 
+        var baseSize = 70.0;
+
         var bugs = {
             "1": {
                 "color": "0xff0000",
-                "position": new PIXI.Point(20, 90)
+                "position": new PIXI.Point(baseSize / 2.0, Window.screen_height - Window.playable_height)
             },
             "2": {
                 "color": "0xffff00",
-                "position": new PIXI.Point(520, 90)
+                "position": new PIXI.Point(Window.screen_width - (baseSize / 2.0), Window.screen_height - Window.playable_height)
             },
             "3": {
                 "color": "0xff00ff",

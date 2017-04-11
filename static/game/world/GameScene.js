@@ -16,7 +16,7 @@ class GameScene extends Scene {
         // food
         this.food_carry_limit = scene_data.food_carry_limit;
         this.food_carrying = 0;
-        this.food = scene_data.food;
+        this.food = 0;
 
         this.speed = scene_data.speed;
         this.goo = scene_data.goo;
@@ -36,7 +36,8 @@ class GameScene extends Scene {
 
                 this.opponents[this.party_guest.players[player]] = {
                     "base": base,
-                    "bug": bug
+                    "bug": bug,
+                    "name": this.party_guest.players[player]
                 };
             }
         }
@@ -112,6 +113,23 @@ class GameScene extends Scene {
 
     }
 
+    announceWinner() {
+        var myScore = this.food;
+        var highestScore = myScore
+        var winner = this.party_guest.players[this.party_guest.guest_number - 1];
+        for (var opponent in this.opponents) {
+            var score = this.opponents[opponent].base.foodCollected;
+            if (score > highestScore) {
+                highestScore = score;
+                winner = this.opponents[opponent].name;
+            }
+        }
+
+        this.winnerText = new PIXI.Text("Game Over!\n" + winner + " wins!", {fill: 0xffffff, fontSize: 32});
+        this.winnerText.position.set((Window.screen_width / 2.0) - (this.winnerText.width / 2.0), Window.screen_height / 2.0);
+        this.stage.addChild(this.winnerText);
+    }
+
     getSceneData() {
         return {
             food: this.food,
@@ -146,6 +164,10 @@ class GameScene extends Scene {
                 break;
             case "player_moved":
                 this.updatePlayerPosition(data);
+                break;
+
+            case "announce_winner":
+                this.announceWinner();
                 break;
         }
     }
