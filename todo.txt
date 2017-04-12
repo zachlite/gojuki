@@ -9,9 +9,10 @@ replacing rectangles with images
 
 
 
-have players join existing parties that are available automatically
+is goo working?
+game start countdown in lobby
 goo image and positioning
-base and player colors
+base and player colors, including party lobby
 add music
 play error sound if trying to pick up food but full
 play sound on pickup food

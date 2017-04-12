@@ -19,7 +19,9 @@ class GameScene extends Scene {
         this.food = 0;
 
         this.speed = scene_data.speed;
-        this.goo = scene_data.goo;
+        // this.goo = scene_data.goo;
+        this.goo = 32;
+        console.log(this.goo);
 
         // opponents
         this.opponents = {};
@@ -236,6 +238,7 @@ class GameScene extends Scene {
             if (this.goo > 0) {
                 this.doMakeGoo();
                 this.goo--;
+                this.gooHUD.text = "Sticky Goo: " + this.goo;
             }
 
             this.space_pressed = true;
@@ -248,7 +251,7 @@ class GameScene extends Scene {
         for (var goo in this.goos) {
             if (Utils.hitTestRectangle(this.goos[goo], this.bug.sprite)) {
 
-                this.removeGoo(goo);
+                // this.removeGoo(goo);
                 // apply effects to player
                 console.log("stuck in goo");
                 this.bug.stuckInGoo();
@@ -311,13 +314,17 @@ class GameScene extends Scene {
                 position.y
             );
         } else {
-            goo.position.set(
-                this.bug.sprite.position.x + 20,
-                this.bug.sprite.position.y + 20
-            )
+            
+            var rotation = this.bug.sprite.rotation;
+            console.log("bug: " + this.bug.sprite.centerX + ", " + this.bug.sprite.centerY);
+            var x = this.bug.sprite.centerX + (Math.sin(rotation) * this.bug.sprite.width * 4);
+            var y = this.bug.sprite.centerY + (Math.cos(rotation) * this.bug.sprite.width * 4);
+            console.log("goo: " + x + ", " + y);
+
+            goo.position.set(x - (goo.width / 2.0), y - (goo.height / 2.0));
         }
 
-        this.stage.addChildAt(goo, 0);
+        this.stage.addChild(goo);
         this.goos.push(goo);
         return goo;
     }

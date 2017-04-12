@@ -28,6 +28,8 @@ class Bug {
         this.v = 0.0;
         this.v_max = v_max;
         this.v_max_reverse = -5.0;
+        this.v_max_orig = this.v_max;
+        this.v_max_reverse_orig = this.v_max_reverse;
         this.acc = 1.0;
         this.friction = .9;
         this.turn_speed = .1;
@@ -147,8 +149,8 @@ class Bug {
     }
 
     stuckInGoo() {
-        var initial_v_max = this.v_max;
-        var initial_v_max_reverse = this.v_max_reverse;
+        var initial_v_max = this.v_max_orig;
+        var initial_v_max_reverse = this.v_max_reverse_orig;
         this.v_max = .5;
         this.v_max_reverse = -.5;
         setTimeout(() => {

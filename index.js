@@ -20,29 +20,17 @@ app.get("/", function(req, res) {
 	res.render("index");
 });
 
-app.use("/party", party);
+app.use("/party", party.party);
 
 app.get("/upgrades", function(req, res) {
 	res.render("upgrades", {data: req.query.data});
 });
 
-function getPlayersInParty(partyId) {
-	var players = [];
-	var party = io.sockets.adapter.rooms[partyId];
-	if (party) {
-		for (var socketId in party.sockets) {
-			players.push(io.sockets.connected[socketId].playerName);
-		}
-	}
-	return players;
-};
 
 io.sockets.on("connection", function(socket) {
 
-	console.log("connected client!: " + socket.id);
-
 	socket.on('REQUEST_JOIN_PARTY', function (playerName, partyId) {
-		var players = getPlayersInParty(partyId);
+		var players = party.getPlayerNamesInParty(partyId);
 		var response = {};
 
 		if (players.length >= 4) {
@@ -65,17 +53,23 @@ io.sockets.on("connection", function(socket) {
 	});
 
 	socket.on("PLAYER_IN_LOBBY", function () {
-		console.log(socket.playerName + " in party.");
 		var partyId = socket.partyId;
-		var players = getPlayersInParty(partyId);
-		io.in(partyId).emit("PLAYER_JOINED_LOBBY", players);
-		if (players.length == 2) {
-			io.in(partyId).emit("LOBBY_ENDED", players);
+		socket.inLobby = true;
+		var playerNames = party.getPlayerNamesInParty(partyId);
+		io.in(partyId).emit("PLAYER_JOINED_LOBBY", playerNames);
+		if (playerNames.length == 4) {
+
+			var players = party.getPlayersInParty(partyId);
+			for (var player in players) {
+				players[player].inLobby = false;
+			}
+
+			io.in(partyId).emit("LOBBY_ENDED", playerNames);
 		}
 	});
 
 	socket.on("NEED_PLAYERS", function () {
-		socket.emit("NEED_PLAYERS_RESPONSE", getPlayersInParty(socket.partyId));
+		socket.emit("NEED_PLAYERS_RESPONSE", party.getPlayerNamesInParty(socket.partyId));
 	});
 
 	socket.on("GAME_OVER", function () {
@@ -103,10 +97,8 @@ io.sockets.on("connection", function(socket) {
 	});
 
 	socket.on("disconnect", function() {
-		console.log("client disconnected");
 		if (socket.playerName) {
-			console.log(socket.playerName + " left " + socket.partyId);
-			var players = getPlayersInParty(socket.partyId);
+			var players = party.getPlayerNamesInParty(socket.partyId);
 			io.in(socket.partyId).emit("PLAYER_LEFT", players);
 		}
 	});
