@@ -20,6 +20,7 @@ class PartyGuest {
     }
 
     destroy() {
+        sceneManager.currentScene.stopMusic();
         this.socket.removeAllListeners("PLAYER_EVENT");
     }
 }

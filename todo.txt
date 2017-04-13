@@ -9,11 +9,7 @@ replacing rectangles with images
 
 
 
-is goo working?
-drop goo in the center of a bug and only make it applicable to enemy players
 game start countdown in lobby
-goo image and positioning
-base and player colors, including party lobby
 add music
 play error sound if trying to pick up food but full
 play sound on pickup food

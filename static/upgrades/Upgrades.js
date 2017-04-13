@@ -6,7 +6,7 @@ class Upgrades {
 		this.socket = socket;
 		this.playerData = playerData;
 
-		this.upgradesTime = 60 * 1000;
+		this.upgradesTime = 45 * 1000;
 		if (playerNumber == 1) {
 			this.initTimer();
 		}

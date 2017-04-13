@@ -73,13 +73,6 @@ function goToUpgrades() {
 		currentScene.stop();
 	}
 
-	// playerData = {
- //            food: 100,
- //            food_carry_limit: 50,
- //            speed: 5,
- //            goo: 0
-	// }
-
 	currentScene = new Upgrades(socket, playerNumber, playerData);
 }
 

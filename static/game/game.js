@@ -11,7 +11,7 @@ class Game {
     constructor (socket, playerNumber, playerData, roundNumber) {
         this.playerNumber = playerNumber;
         this.socket = socket;
-        this.game_time = 90 * 1000; // 60 seconds
+        this.game_time = 60 * 1000; // 60 seconds
 
         this.socket.on("NEED_PLAYERS_RESPONSE", (players) => {
             this.init(players, playerData, roundNumber);

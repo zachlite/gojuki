@@ -12,6 +12,7 @@ app.set("view engine", "mustache");
 app.set("views", __dirname + "/views");
 app.disable('view cache');
 
+app.use("/sounds", express.static(path.join(__dirname, "/sounds")));
 app.use("/static", express.static(path.join(__dirname, "/static")));
 app.use("/img", express.static(path.join(__dirname, "/img")));
 app.use("/style", express.static(path.join(__dirname, "/style")));
@@ -57,7 +58,7 @@ io.sockets.on("connection", function(socket) {
 		socket.inLobby = true;
 		var playerNames = party.getPlayerNamesInParty(partyId);
 		io.in(partyId).emit("PLAYER_JOINED_LOBBY", playerNames);
-		if (playerNames.length == 2) {
+		if (playerNames.length == 4) {
 
 			var players = party.getPlayersInParty(partyId);
 			for (var player in players) {

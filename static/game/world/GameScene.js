@@ -5,10 +5,33 @@ import Scene from "./Scene.js";
 import Bug from "./../players/Bug.js";
 import Base from "./components/Base.js";
 import PlayerConfig from "./../players/PlayerConfig.js";
+var Howl = require("howler");
 
 class GameScene extends Scene {
     constructor(party_guest, scene_data, roundNumber) {
         super();
+
+        this.backgroundMusic = new Howl.Howl({
+            src: ["/sounds/play.mp3"]
+        });
+
+        this.foodSound = new Howl.Howl({
+            src: ["/sounds/pickup-food.wav"]
+        });
+
+        this.deployGooSound = new Howl.Howl({
+            src: ["/sounds/deploy-goo.wav"]
+        });
+
+        this.returnedToBaseSound = new Howl.Howl({
+            src: ["/sounds/returned-to-base.wav"]
+        });
+
+        this.stuckInGooSound = new Howl.Howl({
+            src: ["/sounds/stuck-in-goo.wav"]
+        })
+
+        this.backgroundMusic.play();
 
         this.party_guest = party_guest;
         
@@ -19,8 +42,7 @@ class GameScene extends Scene {
         this.food = 0;
 
         this.speed = scene_data.speed;
-        // this.goo = scene_data.goo;
-        this.goo = 32;
+        this.goo = scene_data.goo;
         console.log(this.goo);
 
         // opponents
@@ -141,6 +163,10 @@ class GameScene extends Scene {
         };
     }
 
+    stopMusic() {
+        this.backgroundMusic.stop();
+    }
+
     didReceiveEvent(type, data) {
         switch(type) {
             case "food_created":
@@ -200,6 +226,7 @@ class GameScene extends Scene {
                 
                 // the food is collected
                 if (this.food_carrying < this.food_carry_limit) {
+                    this.foodSound.play();
                     this.food_carrying += 1;
 
                     // update the HUD
@@ -224,6 +251,10 @@ class GameScene extends Scene {
     didPlayerReturnToBase() {
         if (Utils.hitTestRectangle(this.base.sprite, this.bug.sprite)) {
             
+            if (this.food_carrying) {
+                this.returnedToBaseSound.play();
+            }
+
             this.food += this.food_carrying;
             this.base.updateFoodCollectedDisplay(this.food);
             this.food_carrying = 0;
@@ -237,6 +268,7 @@ class GameScene extends Scene {
             
             if (this.goo > 0) {
                 this.doMakeGoo();
+                this.deployGooSound.play();
                 this.goo--;
                 this.gooHUD.text = "Sticky Goo: " + this.goo;
             }
@@ -252,6 +284,7 @@ class GameScene extends Scene {
             if (this.goos[goo].deployer != this.party_guest.guest_number) {
                if (Utils.hitTestRectangle(this.goos[goo].sprite, this.bug.sprite)) {
                     console.log("stuck in goo");
+                    this.stuckInGooSound.play();
                     this.removeGoo(goo);
                     this.bug.stuckInGoo();
                     this.party_guest.broadcastEvent("goo_used", goo);
