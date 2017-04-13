@@ -57,7 +57,7 @@ io.sockets.on("connection", function(socket) {
 		socket.inLobby = true;
 		var playerNames = party.getPlayerNamesInParty(partyId);
 		io.in(partyId).emit("PLAYER_JOINED_LOBBY", playerNames);
-		if (playerNames.length == 4) {
+		if (playerNames.length == 2) {
 
 			var players = party.getPlayersInParty(partyId);
 			for (var player in players) {

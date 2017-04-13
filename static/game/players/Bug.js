@@ -1,30 +1,9 @@
 import Keyboard from "./../utils/Keyboard.js";
 import Window from "./../utils/Window.js";
+import PlayerConfig from "./PlayerConfig.js";
 
 class Bug {
     constructor (number, v_max) {
-
-        var baseSize = 70.0;
-
-        var bugs = {
-            "1": {
-                "color": "0xff0000",
-                "position": new PIXI.Point(baseSize / 2.0, Window.screen_height - Window.playable_height)
-            },
-            "2": {
-                "color": "0xffff00",
-                "position": new PIXI.Point(Window.screen_width - (baseSize / 2.0), Window.screen_height - Window.playable_height)
-            },
-            "3": {
-                "color": "0xff00ff",
-                "position": new PIXI.Point(20, 410)
-            },
-            "4": {
-                "color": "0x00ffff",
-                "position": new PIXI.Point(520, 410)
-            },
-        }
-
         this.v = 0.0;
         this.v_max = v_max;
         this.v_max_reverse = -5.0;
@@ -33,18 +12,18 @@ class Bug {
         this.acc = 1.0;
         this.friction = .9;
         this.turn_speed = .1;
-        this.sprite = this.initSprite(bugs, number);
+        this.sprite = this.initSprite(number);
     }
 
-    initSprite(bugs, number) {
+    initSprite(number) {
         var frames = [];
         for (var i = 1; i <= 4; i++) {
             frames.push(PIXI.Texture.fromImage("/img/bug/bug" + i + ".png"))
         }
 
         var bug = new PIXI.extras.AnimatedSprite(frames);
-        bug.position.copy(bugs[number].position);
-        bug.tint = bugs[number].color;
+        bug.position.copy(PlayerConfig[number].startPosition);
+        bug.tint = PlayerConfig[number].color;
         bug.anchor.set(.5, .7);
         bug.scale.x *= .1;
         bug.scale.y *= .1;

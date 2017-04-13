@@ -4,7 +4,7 @@ import Keyboard from "./../utils/Keyboard.js";
 import Scene from "./Scene.js";
 import Bug from "./../players/Bug.js";
 import Base from "./components/Base.js";
-
+import PlayerConfig from "./../players/PlayerConfig.js";
 
 class GameScene extends Scene {
     constructor(party_guest, scene_data, roundNumber) {
@@ -83,7 +83,7 @@ class GameScene extends Scene {
         roundHUD.position.set((Window.screen_width / 2.0) - (roundHUD.width / 2.0), hudTextHeight);
         this.hud.addChild(roundHUD);
 
-        this.goo_texture = PIXI.Texture.fromImage("/img/goo.png");
+        this.goo_texture = PIXI.Texture.fromImage("/img/goo-new.png");
         this.goos = [];
 
         this.food_texture = PIXI.Texture.fromImage('/img/food.png');
@@ -249,19 +249,19 @@ class GameScene extends Scene {
 
     didPlayerGetStuckInGoo() {
         for (var goo in this.goos) {
-            if (Utils.hitTestRectangle(this.goos[goo], this.bug.sprite)) {
-
-                // this.removeGoo(goo);
-                // apply effects to player
-                console.log("stuck in goo");
-                this.bug.stuckInGoo();
-                this.party_guest.broadcastEvent("goo_used", goo);
+            if (this.goos[goo].deployer != this.party_guest.guest_number) {
+               if (Utils.hitTestRectangle(this.goos[goo].sprite, this.bug.sprite)) {
+                    console.log("stuck in goo");
+                    this.removeGoo(goo);
+                    this.bug.stuckInGoo();
+                    this.party_guest.broadcastEvent("goo_used", goo);
+                }
             }
         }
     }
 
     removeGoo(goo) {
-        this.stage.removeChild(this.goos[goo]);
+        this.stage.removeChild(this.goos[goo].sprite);
         this.goos.splice(goo, 1);
     }
 
@@ -301,32 +301,33 @@ class GameScene extends Scene {
     }
 
     doMakeGoo() {
-        var goo = this.makeGoo();
-        this.party_guest.broadcastEvent("goo_created", {x: goo.position.x, y: goo.position.y});
+        var gooPositionX = this.bug.sprite.position.x - (this.bug.sprite.width / 2.0);
+        var gooPositionY = this.bug.sprite.position.y - (this.bug.sprite.height / 2.0);;
+        // var gooRotation = this.bug.sprite.rotation;
+        var gooRotation = 0;
+
+        var gooData = {
+            x: gooPositionX,
+            y: gooPositionY,
+            rotation: gooRotation,
+            playerNumber: this.party_guest.guest_number
+        };
+
+        this.makeGoo(gooData);
+        this.party_guest.broadcastEvent("goo_created", gooData);
     }
 
-    makeGoo(position) {
-        var goo = new PIXI.Sprite(this.goo_texture);
+    makeGoo(gooData) {
+        var goo = {
+            sprite: new PIXI.Sprite(this.goo_texture),
+            deployer: gooData.playerNumber
+        };
 
-        if (position) {
-            goo.position.set(
-                position.x,
-                position.y
-            );
-        } else {
-            
-            var rotation = this.bug.sprite.rotation;
-            console.log("bug: " + this.bug.sprite.centerX + ", " + this.bug.sprite.centerY);
-            var x = this.bug.sprite.centerX + (Math.sin(rotation) * this.bug.sprite.width * 4);
-            var y = this.bug.sprite.centerY + (Math.cos(rotation) * this.bug.sprite.width * 4);
-            console.log("goo: " + x + ", " + y);
-
-            goo.position.set(x - (goo.width / 2.0), y - (goo.height / 2.0));
-        }
-
-        this.stage.addChild(goo);
+        goo.sprite.position.set(gooData.x, gooData.y);
+        goo.sprite.rotation = gooData.rotation;
+        goo.sprite.tint = PlayerConfig[gooData.playerNumber].color;
+        this.stage.addChildAt(goo.sprite, 0);
         this.goos.push(goo);
-        return goo;
     }
 
     doMakeFood() {
