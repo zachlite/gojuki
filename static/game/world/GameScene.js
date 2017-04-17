@@ -29,7 +29,11 @@ class GameScene extends Scene {
 
         this.stuckInGooSound = new Howl.Howl({
             src: ["/sounds/stuck-in-goo.wav"]
-        })
+        });
+
+        this.carryLimitReachedSound = new Howl.Howl({
+            src: ["/sounds/error.mp3"]
+        });
 
         this.backgroundMusic.play();
 
@@ -113,7 +117,7 @@ class GameScene extends Scene {
 
         if (this.party_guest.guest_number == 1) {
             // this player is designated to set up whatever is needed on the gameboard for other players.
-            for (var i = 0; i < 10; i++) {
+            for (var i = 0; i < 20; i++) {
                 this.doMakeFood();
             }
         }
@@ -238,8 +242,25 @@ class GameScene extends Scene {
 
                     // make more food
                     this.doMakeFood();
+                } else {
+                    
+                    this.carryLimitReachedSound.play();
+                    this.flashCarryLimitWarning();
                 }
             }
+        }
+    }
+
+    flashCarryLimitWarning() {
+        if (!this.warningFlashed) {
+            this.warningFlashed = true;
+            var warning = new PIXI.Text("Carry limit reached! Return to base!", {fill: 0xffffff});
+            warning.position.set(Window.screen_width / 2.0 - (warning.width / 2.0), Window.screen_height / 2.0);
+            this.stage.addChild(warning);
+            setTimeout(() => {
+                this.warningFlashed = false; 
+                this.stage.removeChild(warning);
+            }, 1000);
         }
     }
 
