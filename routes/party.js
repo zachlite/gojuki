@@ -21,7 +21,7 @@ module.exports = function (io) {
 	function getPlayerNamesInParty(partyId) {
 		var pNames = [];
 		var players = getPlayersInParty(partyId);
-		for (player in players) {
+		for (var player in players) {
 			pNames.push(players[player].playerName);
 		}
 		return pNames;
