@@ -25,7 +25,7 @@ module.exports = {
         ]
     },
     plugins: [
-        // new UglifyJSPlugin()
+        new UglifyJSPlugin()
     ],
     devServer: {
         host: '0.0.0.0',

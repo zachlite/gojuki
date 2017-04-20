@@ -21,9 +21,7 @@
     "webpack-dev-server": "^1.16.2"
   },
   "dependencies": {
-    "connect-redis": "^3.2.0",
     "express": "^4.14.1",
-    "express-session": "^1.15.1",
     "howler": "^2.0.3",
     "jquery": "^3.2.1",
     "mustache-express": "^1.2.4",
@@ -33,7 +31,6 @@
     "react-dom": "^15.4.2",
     "remodal": "^1.1.1",
     "sha1": "^1.1.1",
-    "socket.io": "^1.7.3",
-    "uuid": "^3.0.1"
+    "socket.io": "^1.7.3"
   }
 }
