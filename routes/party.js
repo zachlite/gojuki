@@ -1,3 +1,4 @@
+"use strict";
 var express = require("express");
 var sha1 = require('sha1');
 var path = require("path");
